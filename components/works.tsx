@@ -1,0 +1,39 @@
+import Work from "./work";
+import WorksContainer from "./works-container";
+
+async function getAllProjects() {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  const res = await fetch(
+    `${process.env.BASE_URL}/api/projects/getAllProjects`
+  );
+  // console.log(res);
+  return res.json();
+}
+
+const Works = async () => {
+  const data: {
+    id: number;
+    title: string;
+    description: string;
+    stack: string;
+    siteUrl: string;
+    coverImageSm: string;
+    coverImage: string;
+    images: string[];
+    mobileImages: string[];
+    isPersonal: boolean;
+    date: string;
+  }[] = await getAllProjects();
+  const nonPersonalProjects = data.filter((project) => !project.isPersonal);
+
+  return (
+    <WorksContainer>
+      {nonPersonalProjects.map((project) => (
+        <Work key={project.id} {...project} />
+      ))}
+    </WorksContainer>
+  );
+};
+
+export default Works;
