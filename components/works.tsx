@@ -3,9 +3,11 @@ import WorksContainer from "./works-container";
 
 async function getAllProjects() {
   const res = await fetch(
-    `${process.env.BASE_URL}/api/projects/getAllProjects`
+    `${process.env.BASE_URL}/api/projects/getAllProjects`,
+    {
+      cache: "no-store",
+    }
   );
-  // console.log(res);
   return res.json();
 }
 
@@ -13,19 +15,29 @@ const Works = async () => {
   if (!process.env.BASE_URL) {
     return null;
   }
-  const data: {
-    id: number;
-    title: string;
-    description: string;
-    stack: string;
-    siteUrl: string;
-    coverImageSm: string;
-    coverImage: string;
-    images: string[];
-    mobileImages: string[];
-    isPersonal: boolean;
-    date: string;
-  }[] = await getAllProjects();
+  const data:
+    | {
+        id: number;
+        title: string;
+        description: string;
+        stack: string;
+        siteUrl: string;
+        coverImageSm: string;
+        coverImage: string;
+        images: string[];
+        mobileImages: string[];
+        isPersonal: boolean;
+        date: string;
+      }[]
+    | null = await getAllProjects();
+  if (data === null) {
+    return (
+      <div className="flex justify-center items-center mt-16">
+        Projects not found
+      </div>
+    );
+  }
+
   const nonPersonalProjects = data?.filter((project) => !project.isPersonal);
 
   return (

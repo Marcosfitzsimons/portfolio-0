@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 async function getProject(projectId: string) {
-  const res = await fetch(`${process.env.BASE_URL}/api/projects/${projectId}`);
+  const res = await fetch(`${process.env.BASE_URL}/api/projects/${projectId}`, {
+    cache: "no-store",
+  });
   // console.log(res);
   return res.json();
 }
@@ -28,7 +30,16 @@ export default async function SingleWorkPage({
     mobileImages: string[];
     isPersonal: boolean;
     date: string;
-  } = await getProject(params.id);
+  } | null = await getProject(params.id);
+
+  if (project === null) {
+    // Handle the case where data is null, such as showing an error message
+    return (
+      <div className="flex justify-center items-center mt-16">
+        Project not found
+      </div>
+    );
+  }
 
   return (
     <section className="flex flex-col items-center gap-5 py-5 sm:w-[80%] sm:mx-auto">
