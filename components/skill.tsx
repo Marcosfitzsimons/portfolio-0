@@ -1,7 +1,6 @@
 import Image from "next/image";
 
 const Skill = ({ ...skill }) => {
-  console.log(skill);
   return (
     <li className="relative group flex flex-col items-center justify-center">
       <div className="transition duration-300 group-hover:-translate-y-3 group-hover:text-white">
