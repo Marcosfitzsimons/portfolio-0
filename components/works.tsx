@@ -26,7 +26,7 @@ const Works = async () => {
     isPersonal: boolean;
     date: string;
   }[] = await getAllProjects();
-  const nonPersonalProjects = data.filter((project) => !project.isPersonal);
+  const nonPersonalProjects = data?.filter((project) => !project.isPersonal);
 
   return (
     <WorksContainer>
