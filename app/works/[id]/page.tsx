@@ -1,23 +1,23 @@
+import { getSingleProject } from "@/lib/projects";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-async function getProject(projectId: string) {
-  const res = await fetch(`${process.env.BASE_URL}/api/projects/${projectId}`, {
-    cache: "no-store",
-  });
-  // console.log(res);
-  return res.json();
-}
+// Development:
+
+// async function getProject(projectId: string) {
+//   const res = await fetch(`${process.env.BASE_URL}/api/projects/${projectId}`, {
+//     cache: "no-store",
+//   });
+//   // console.log(res);
+//   return res.json();
+// }
 
 export default async function SingleWorkPage({
   params,
 }: {
   params: { id: string };
 }) {
-  if (!process.env.BASE_URL) {
-    return null;
-  }
   const project: {
     id: number;
     title: string;
@@ -30,7 +30,7 @@ export default async function SingleWorkPage({
     mobileImages: string[];
     isPersonal: boolean;
     date: string;
-  } | null = await getProject(params.id);
+  } | null = await getSingleProject(params.id);
 
   if (project === null) {
     // Handle the case where data is null, such as showing an error message

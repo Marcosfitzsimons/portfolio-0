@@ -1,20 +1,19 @@
+import { getAllProjects } from "@/lib/projects";
 import Work from "./work";
 import WorksContainer from "./works-container";
 
-async function getAllProjects() {
-  const res = await fetch(
-    `${process.env.BASE_URL}/api/projects/getAllProjects`,
-    {
-      cache: "no-store",
-    }
-  );
-  return res.json();
-}
+// Development
+// async function getAllProjects() {
+//   const res = await fetch(
+//     `${process.env.BASE_URL}/api/projects/getAllProjects`,
+//     {
+//       cache: "no-store",
+//     }
+//   );
+//   return res.json();
+// }
 
 const PersonalProjects = async () => {
-  if (!process.env.BASE_URL) {
-    return null;
-  }
   const data:
     | {
         id: number;
