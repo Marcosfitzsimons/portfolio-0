@@ -3,8 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 async function getProject(projectId: string) {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
   const res = await fetch(`${process.env.BASE_URL}/api/projects/${projectId}`);
   // console.log(res);
   return res.json();
@@ -15,6 +13,9 @@ export default async function SingleWorkPage({
 }: {
   params: { id: string };
 }) {
+  if (!process.env.BASE_URL) {
+    return null;
+  }
   const project: {
     id: number;
     title: string;

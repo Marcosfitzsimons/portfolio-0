@@ -2,8 +2,6 @@ import Work from "./work";
 import WorksContainer from "./works-container";
 
 async function getAllProjects() {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
   const res = await fetch(
     `${process.env.BASE_URL}/api/projects/getAllProjects`
   );
@@ -12,6 +10,9 @@ async function getAllProjects() {
 }
 
 const Works = async () => {
+  if (!process.env.BASE_URL) {
+    return null;
+  }
   const data: {
     id: number;
     title: string;

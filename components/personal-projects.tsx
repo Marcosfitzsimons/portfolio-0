@@ -11,6 +11,9 @@ async function getAllProjects() {
 }
 
 const PersonalProjects = async () => {
+  if (!process.env.BASE_URL) {
+    return null;
+  }
   const data: {
     id: number;
     title: string;
