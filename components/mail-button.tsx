@@ -20,7 +20,7 @@ const MailButton = () => {
 
   return (
     <Popover>
-      <div className="relative rounded-full transition-colors after:absolute after:pointer-events-none after:inset-px after:rounded-full after:shadow-highlight after:transition-colors after:shadow-gray-300/20 focus-within:after:shadow-gray-300/50 hover:bg-accent hover:text-accent-foreground">
+      <div className="relative bg-card rounded-full transition-colors after:absolute after:pointer-events-none after:inset-px after:rounded-full after:shadow-highlight after:transition-colors after:shadow-gray-300/20 focus-within:after:shadow-gray-300/50 hover:text-accent-foreground">
         <PopoverTrigger className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-800/20">
           <Mail className="w-5 h-5" />
         </PopoverTrigger>
