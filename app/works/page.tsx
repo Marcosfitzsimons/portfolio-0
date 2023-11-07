@@ -10,13 +10,13 @@ const WorksPage = () => {
     <section className="flex flex-col gap-10 py-5 sm:w-[80%] sm:mx-auto">
       <div className="flex flex-col gap-3">
         <div className="w-full flex items-end justify-between">
-          <h2 className="font-medium text-lg">Works</h2>
+          <h2 className="font-medium text-lg leading-5">Works</h2>
           <Link
             href="https://github.com/Marcosfitzsimons"
             className=""
             target="_blank"
           >
-            <span className="text-xs font-light flex items-end underline text-blue-600 gap-1 transition-colors hover:text-blue-300">
+            <span className="text-xs font-light flex underline text-blue-600 gap-1 transition-colors hover:text-blue-300">
               Source code <Github className="h-4 w-4" />
             </span>
           </Link>
