@@ -92,7 +92,7 @@ export default async function SingleWorkPage({
           <p className="font-light">{project.stack}</p>
         </div>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="w-full flex flex-col gap-2">
         {project.images.map((image) => (
           <Image
             key={image}
@@ -105,7 +105,7 @@ export default async function SingleWorkPage({
           />
         ))}
       </div>
-      <div className="flex flex-col gap-2 max-w-sm sm:w-full sm:max-w-full sm:flex-row">
+      <div className="w-full flex flex-col gap-2 max-w-sm sm:w-full sm:max-w-full sm:grid sm:grid-cols-2">
         {project.mobileImages.map((image) => (
           <Image
             key={image}
