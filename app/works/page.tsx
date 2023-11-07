@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const WorksPage = () => {
   return (
-    <section className="flex flex-col gap-10 py-5 sm:w-[80%] sm:mx-auto">
+    <section className="flex flex-col gap-10 py-5 pb-10 sm:w-[80%] sm:mx-auto">
       <div className="flex flex-col gap-3">
         <div className="w-full flex items-end justify-between">
           <h2 className="font-medium text-lg leading-5">Works</h2>
