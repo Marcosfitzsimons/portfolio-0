@@ -2,6 +2,16 @@ import { getSingleProject } from "@/lib/projects";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 // Development:
 
@@ -42,7 +52,7 @@ export default async function SingleWorkPage({
   }
 
   return (
-    <section className="flex flex-col items-center gap-5 py-5 sm:w-[80%] sm:mx-auto">
+    <section className="flex flex-col items-center gap-5 pt-5 pb-10 sm:w-[80%] sm:mx-auto">
       <Image
         src={project.coverImage}
         alt="Project cover image"
@@ -84,28 +94,60 @@ export default async function SingleWorkPage({
       </div>
       <div className="flex flex-col gap-2">
         {project.images.map((image) => (
-          <Image
-            key={image}
-            src={image}
-            alt="Project image"
-            sizes="100vw"
-            className="w-full h-auto rounded-2xl"
-            width={500}
-            height={300}
-          />
+          <Dialog key={image}>
+            <DialogTrigger asChild>
+              <button>
+                <Image
+                  key={image}
+                  src={image}
+                  alt="Project image"
+                  sizes="100vw"
+                  className="w-full h-auto rounded-2xl"
+                  width={500}
+                  height={300}
+                />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[850px] py-10">
+              <Image
+                key={image}
+                src={image}
+                alt="Project image"
+                sizes="100vw"
+                className="w-full h-auto rounded-2xl"
+                width={500}
+                height={300}
+              />
+            </DialogContent>
+          </Dialog>
         ))}
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 max-w-sm sm:w-full sm:max-w-full sm:flex-row">
         {project.mobileImages.map((image) => (
-          <Image
-            key={image}
-            src={image}
-            alt="Project image"
-            sizes="100vw"
-            className="w-full h-auto rounded-2xl"
-            width={400}
-            height={800}
-          />
+          <Dialog key={image}>
+            <DialogTrigger asChild>
+              <button>
+                <Image
+                  src={image}
+                  alt="Project image"
+                  sizes="100vw"
+                  className="w-full h-auto rounded-2xl"
+                  width={400}
+                  height={800}
+                />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] py-10">
+              <Image
+                src={image}
+                alt="Project image"
+                sizes="100vw"
+                className="w-full h-auto rounded-2xl"
+                width={400}
+                height={800}
+              />
+            </DialogContent>
+          </Dialog>
         ))}
       </div>
     </section>
