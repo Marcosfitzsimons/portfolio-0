@@ -94,60 +94,28 @@ export default async function SingleWorkPage({
       </div>
       <div className="flex flex-col gap-2">
         {project.images.map((image) => (
-          <Dialog key={image}>
-            <DialogTrigger asChild>
-              <button>
-                <Image
-                  key={image}
-                  src={image}
-                  alt="Project image"
-                  sizes="100vw"
-                  className="w-full h-auto rounded-2xl"
-                  width={500}
-                  height={300}
-                />
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[850px] py-10">
-              <Image
-                key={image}
-                src={image}
-                alt="Project image"
-                sizes="100vw"
-                className="w-full h-auto rounded-2xl"
-                width={500}
-                height={300}
-              />
-            </DialogContent>
-          </Dialog>
+          <Image
+            key={image}
+            src={image}
+            alt="Project image"
+            sizes="100vw"
+            className="w-full h-auto rounded-2xl"
+            width={500}
+            height={300}
+          />
         ))}
       </div>
       <div className="flex flex-col gap-2 max-w-sm sm:w-full sm:max-w-full sm:flex-row">
         {project.mobileImages.map((image) => (
-          <Dialog key={image}>
-            <DialogTrigger asChild>
-              <button>
-                <Image
-                  src={image}
-                  alt="Project image"
-                  sizes="100vw"
-                  className="w-full h-auto rounded-2xl"
-                  width={400}
-                  height={800}
-                />
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] py-10">
-              <Image
-                src={image}
-                alt="Project image"
-                sizes="100vw"
-                className="w-full h-auto rounded-2xl"
-                width={400}
-                height={800}
-              />
-            </DialogContent>
-          </Dialog>
+          <Image
+            key={image}
+            src={image}
+            alt="Project image"
+            sizes="100vw"
+            className="w-full h-auto rounded-2xl"
+            width={400}
+            height={800}
+          />
         ))}
       </div>
     </section>
