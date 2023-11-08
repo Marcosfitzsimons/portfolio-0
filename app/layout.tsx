@@ -14,7 +14,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${GeistSans.className} relative overflow-x-hidden mx-auto w-[min(95%,650px)] flex flex-col items-center justify-center`}
+        className={`${GeistSans.className} antialiased relative overflow-x-hidden mx-auto w-[min(95%,650px)] flex flex-col items-center justify-center`}
       >
         <Header />
         <div className="w-full">{props.children}</div>
