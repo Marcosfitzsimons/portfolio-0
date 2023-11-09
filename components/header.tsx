@@ -6,7 +6,10 @@ const Header = () => {
     <div
       className={`${monserrat.className} w-full py-4 flex items-center justify-center`}
     >
-      <Link href="/" className="group font-semibold flex items-center gap-0.5">
+      <Link
+        href="/"
+        className="group font-semibold flex items-center gap-0.5 transition-colors hover:text-white"
+      >
         Marcos Fitzsimons
       </Link>
     </div>
