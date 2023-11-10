@@ -29,6 +29,7 @@ const Works = async () => {
         date: string;
       }[]
     | null = await getAllProjects();
+
   if (data === null) {
     return (
       <div className="flex justify-center items-center mt-16">

@@ -1,9 +1,9 @@
 import Works from "@/components/works";
-import Loading from "./loading";
 import { Suspense } from "react";
 import PersonalProjects from "@/components/personal-projects";
 import { Github } from "lucide-react";
 import Link from "next/link";
+import WorksSkeleton from "@/components/skeletons/works-skeleton";
 
 const WorksPage = () => {
   return (
@@ -21,13 +21,13 @@ const WorksPage = () => {
             </span>
           </Link>
         </div>
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<WorksSkeleton />}>
           <Works />
         </Suspense>
       </div>
       <div className="flex flex-col gap-3">
         <h2 className="font-medium text-lg">Personal projects</h2>
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<WorksSkeleton />}>
           <PersonalProjects />
         </Suspense>
       </div>
