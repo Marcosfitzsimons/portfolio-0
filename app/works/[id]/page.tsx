@@ -2,16 +2,7 @@ import { getSingleProject } from "@/lib/projects";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Metadata } from "next";
 
 // Development:
 
@@ -22,6 +13,10 @@ import {
 //   // console.log(res);
 //   return res.json();
 // }
+
+export const metadata: Metadata = {
+  title: "Single project",
+};
 
 export default async function SingleWorkPage({
   params,

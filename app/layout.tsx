@@ -6,8 +6,13 @@ import Footer from "@/components/footer";
 import Blob from "@/components/blob";
 
 export const metadata: Metadata = {
-  title: "Portfolio - Marcos Fitzsimons",
-  description: "Portfolio web...",
+  title: {
+    template: "%s - Marcos Fitzsimons",
+    default: "Portfolio - Marcos Fitzsimons",
+  },
+  description:
+    "Explore a web developer's portfolio of elegant, user-centric websites showcasing creativity, functionality, and seamless user experiences",
+  metadataBase: new URL("https://www.marcosfitzsimons.com.ar"),
 };
 
 export default function RootLayout(props: { children: React.ReactNode }) {

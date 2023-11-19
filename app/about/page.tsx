@@ -1,5 +1,10 @@
 import Skill from "@/components/skill";
 import { skills } from "@/lib/skills-source";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About me",
+};
 
 const AboutePage = () => {
   return (

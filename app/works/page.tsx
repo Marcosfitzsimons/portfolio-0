@@ -4,6 +4,11 @@ import PersonalProjects from "@/components/personal-projects";
 import { Github } from "lucide-react";
 import Link from "next/link";
 import WorksSkeleton from "@/components/skeletons/works-skeleton";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Works",
+};
 
 const WorksPage = () => {
   return (
