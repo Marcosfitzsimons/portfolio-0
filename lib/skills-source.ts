@@ -20,7 +20,7 @@ export const skills: {
         height: 24,
     },
     {
-        name: "React",
+        name: "React.js",
         src: "/react.svg",
         alt: "React logo",
         width: 24,
@@ -34,18 +34,11 @@ export const skills: {
         height: 32,
     },    
     {
-        name: "ShadcnUI",
-        src: "/shadcn.svg",
-        alt: "ShadcnUI logo",
-        width: 24,
-        height: 24,
-    },
-    {
         name: "Node.js",
         src: "/nodejs.svg",
         alt: "Node logo",
-        width: 50,
-        height: 50,
+        width: 45,
+        height: 45,
     },
     {
         name: "Express.js",
@@ -60,6 +53,27 @@ export const skills: {
         alt: "MongoDB logo",
         width: 50,
         height: 50,
+    },
+    {
+        name: "Prisma",
+        src: "/prisma.svg",
+        alt: "Prisma logo",
+        width: 50,
+        height: 50,
+    },
+    {
+        name: "PostgreSQL",
+        src: "/postgresql.svg",
+        alt: "PostgreSQL logo",
+        width: 25,
+        height: 25,
+    },
+    {
+        name: "ShadcnUI",
+        src: "/shadcn.svg",
+        alt: "ShadcnUI logo",
+        width: 24,
+        height: 24,
     },
     {
         name: "HTML5",
