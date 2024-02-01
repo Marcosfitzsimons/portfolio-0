@@ -12,6 +12,7 @@ export default function NotFound() {
           Sorry, we could not find this page
         </p>
         <SecondaryButton
+          href="/"
           icon={<Home className="w-4 h-4 md:w-5 md:h-5" strokeWidth={2.3} />}
         >
           Return home
