@@ -1,6 +1,7 @@
 import PrimaryButton from "@/components/primary-button";
 import SecondaryButton from "@/components/secondary-button";
 import SocialLinks from "@/components/social-links";
+import { User } from "lucide-react";
 
 export default function Home() {
   return (
@@ -13,7 +14,12 @@ export default function Home() {
         <SocialLinks />
         <div className="flex items-center gap-3 py-10">
           <PrimaryButton />
-          <SecondaryButton />
+          <SecondaryButton
+            href="/about"
+            icon={<User className="w-4 h-4 lg:w-5 lg:h-5" strokeWidth={2.3} />}
+          >
+            About me
+          </SecondaryButton>
         </div>
       </div>
     </main>
