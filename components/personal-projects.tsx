@@ -1,4 +1,4 @@
-import { getAllProjects } from "@/lib/projects";
+import { getPersonalProjects } from "@/lib/projects";
 import Work from "./work";
 import WorksContainer from "./works-container";
 
@@ -28,10 +28,9 @@ const PersonalProjects = async () => {
         isPersonal: boolean;
         date: string;
       }[]
-    | null = await getAllProjects();
+    | null = await getPersonalProjects();
 
   if (data === null) {
-    // Handle the case where data is null, such as showing an error message
     return (
       <div className="flex justify-center items-center mt-16">
         Projects not found
@@ -39,11 +38,9 @@ const PersonalProjects = async () => {
     );
   }
 
-  const personalProjects = data.filter((project) => project.isPersonal);
-
   return (
     <WorksContainer>
-      {personalProjects.map((project) => (
+      {data.map((project) => (
         <Work key={project.id} {...project} />
       ))}
     </WorksContainer>

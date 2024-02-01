@@ -1,4 +1,4 @@
-import { getAllProjects } from "@/lib/projects";
+import { getWorkProjects } from "@/lib/projects";
 import Work from "./work";
 import WorksContainer from "./works-container";
 
@@ -28,7 +28,7 @@ const Works = async () => {
         isPersonal: boolean;
         date: string;
       }[]
-    | null = await getAllProjects();
+    | null = await getWorkProjects();
 
   if (data === null) {
     return (
@@ -38,11 +38,9 @@ const Works = async () => {
     );
   }
 
-  const nonPersonalProjects = data?.filter((project) => !project.isPersonal);
-
   return (
     <WorksContainer>
-      {nonPersonalProjects.map((project) => (
+      {data.map((project) => (
         <Work key={project.id} {...project} />
       ))}
     </WorksContainer>
