@@ -84,12 +84,12 @@ const ChatBot = () => {
           {messages.map((message) => (
             <div key={message.id} className="flex flex-col gap-1 mb-2">
               {message.role === "user" ? (
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <div className="select-none flex items-center gap-1 text-sm text-muted-foreground">
                   <User strokeWidth="1.5" className="w-5 aspect-square" />
                   <span>You</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-1 text-sm ">
+                <div className="select-none flex items-center gap-1 text-sm ">
                   <Image
                     src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif"
                     alt="AI gif"
