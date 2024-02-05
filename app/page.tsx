@@ -1,3 +1,4 @@
+import ChatBot from "@/components/chat-bot";
 import PrimaryButton from "@/components/primary-button";
 import SecondaryButton from "@/components/secondary-button";
 import SocialLinks from "@/components/social-links";
@@ -6,7 +7,7 @@ import { User } from "lucide-react";
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center">
-      <div className="py-20 flex flex-col items-center gap-3 lg:py-40">
+      <div className="w-full py-20 flex flex-col items-center gap-3 lg:py-36">
         <div className="flex flex-col items-center">
           <h1 className="lg:text-2xl">Marcos Fitzsimons</h1>
           <h2 className="text-2xl lg:text-4xl">Front-End Developer</h2>
@@ -21,6 +22,7 @@ export default function Home() {
             About me
           </SecondaryButton>
         </div>
+        <ChatBot />
       </div>
     </main>
   );

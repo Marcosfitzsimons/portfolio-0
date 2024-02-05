@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import { GeistSans } from "geist/font";
 import "./globals.css";
 import Header from "@/components/header";
@@ -24,10 +25,12 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <Header />
         <div className="w-full">{props.children}</div>
         <Footer />
-        <span className="fixed right-2 bottom-2 text-xs text-muted-foreground transition-colors hover:text-white">
-          Made w. 🤍 by Marcos Fitzsimons
+        <span className="fixed right-2 bottom-2 group text-xs text-muted-foreground transition-colors hover:text-white">
+          Made w. <span className="group-hover:animate-pulse">🤍</span> by
+          Marcos Fitzsimons
         </span>
         <Blob />
+        <Toaster position="top-center" />
       </body>
     </html>
   );
