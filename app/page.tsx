@@ -7,7 +7,7 @@ import { User } from "lucide-react";
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center">
-      <div className="w-full py-16 flex flex-col items-center gap-3 lg:py-32">
+      <div className="w-full py-16 flex flex-col items-center gap-1 md:gap-3 md:py-32">
         <div className="flex flex-col items-center">
           <h1 className="lg:text-2xl">Marcos Fitzsimons</h1>
           <h2 className="text-2xl lg:text-4xl">Front-End Developer</h2>
