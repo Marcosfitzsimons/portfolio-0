@@ -113,7 +113,7 @@ const ChatBot = () => {
                     : "bg-primary/20 border-primary/30"
                 )}
               >
-                <p className="text-sm rounded-none px-4 py-1.5 md:text-base">
+                <p className="text-xs rounded-none px-4 py-1.5 md:text-sm">
                   {message.content}
                 </p>
               </ScrollArea>
@@ -148,7 +148,7 @@ const ChatBot = () => {
                       placeholder="Which technologies do you use?"
                       {...field}
                       disabled={loading}
-                      className="w-full rounded-lg text-xs md:text-sm"
+                      className="w-full text-xs md:text-sm"
                     />
                   </FormControl>
                   <FormMessage />
