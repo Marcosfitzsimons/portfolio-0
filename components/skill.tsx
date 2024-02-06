@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const Skill = ({ ...skill }) => {
   return (
-    <li className="relative group flex flex-col items-center justify-center">
+    <li className="group relative flex flex-col items-center justify-center">
       <div className="transition duration-300 group-hover:-translate-y-3 group-hover:text-white">
         <div className="flex items-center justify-center">
           <Image
@@ -13,7 +13,7 @@ const Skill = ({ ...skill }) => {
           />
         </div>
       </div>
-      <div className="opacity-0 translate-y-full font-light text-muted-foreground text-xs absolute -bottom-2 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-hover:text-white">
+      <div className="absolute -bottom-2 translate-y-full text-xs font-light text-muted-foreground opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:text-white group-hover:opacity-100">
         {skill.name}
       </div>
     </li>

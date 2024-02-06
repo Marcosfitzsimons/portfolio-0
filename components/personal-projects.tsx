@@ -32,7 +32,7 @@ const PersonalProjects = async () => {
 
   if (data === null) {
     return (
-      <div className="flex justify-center items-center mt-16">
+      <div className="mt-16 flex items-center justify-center">
         Projects not found
       </div>
     );

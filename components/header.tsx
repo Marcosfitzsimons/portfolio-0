@@ -4,11 +4,11 @@ import { monserrat } from "./fonts";
 const Header = () => {
   return (
     <div
-      className={`${monserrat.className} w-full py-4 flex items-center justify-center`}
+      className={`${monserrat.className} flex w-full items-center justify-center py-4`}
     >
       <Link
         href="/"
-        className="group font-semibold flex items-center gap-0.5 transition-colors hover:text-white"
+        className="group flex items-center gap-0.5 font-semibold transition-colors hover:text-white"
       >
         Marcos Fitzsimons
       </Link>

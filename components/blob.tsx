@@ -1,9 +1,9 @@
 const Blob = () => {
   return (
-    <div className="-z-10 fixed h-44 w-full top-20 max-w-lg lg:top-44 sm:h-80">
-      <div className="absolute top-0 -left-4 w-44 aspect-square bg-purple-300 rounded-full mix-blend-multiply filter blur-2xl animate-blob opacity-30 sm:w-72"></div>
-      <div className="absolute top-0 -right-4 w-44 aspect-square bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl animate-blob animation-delay-2000 opacity-30 sm:w-72"></div>
-      <div className="absolute -bottom-4 left-20 w-44 aspect-square bg-orange-300 rounded-full mix-blend-multiply filter blur-2xl animate-blob animation-delay-4000 opacity-30 sm:w-72"></div>
+    <div className="fixed top-20 -z-10 h-44 w-full max-w-lg sm:h-80 lg:top-44">
+      <div className="absolute -left-4 top-0 aspect-square w-44 animate-blob rounded-full bg-purple-300 opacity-30 mix-blend-multiply blur-2xl filter sm:w-72"></div>
+      <div className="animation-delay-2000 absolute -right-4 top-0 aspect-square w-44 animate-blob rounded-full bg-pink-300 opacity-30 mix-blend-multiply blur-2xl filter sm:w-72"></div>
+      <div className="animation-delay-4000 absolute -bottom-4 left-20 aspect-square w-44 animate-blob rounded-full bg-orange-300 opacity-30 mix-blend-multiply blur-2xl filter sm:w-72"></div>
     </div>
   );
 };

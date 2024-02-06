@@ -27,10 +27,10 @@ const Work = ({ ...project }: WorkProps) => {
           width={450}
           height={350}
           sizes="100vw"
-          className="w-full h-[13rem] sm:h-[10rem] rounded-2xl"
+          className="h-[13rem] w-full rounded-2xl sm:h-[10rem]"
         />
         <h3 className="font-medium">{project.title}</h3>
-        <p className="text-muted-foreground text-sm">{project.description}</p>
+        <p className="text-sm text-muted-foreground">{project.description}</p>
       </Link>
     </article>
   );

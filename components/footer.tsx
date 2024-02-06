@@ -8,15 +8,15 @@ import { usePathname } from "next/navigation";
 const Footer = () => {
   const pathname = usePathname();
   return (
-    <footer className="flex items-center justify-center w-[min(95%,650px)] fixed bottom-10 lg:bottom-16">
-      <div className="relative transition-colors after:absolute after:pointer-events-none after:inset-px after:rounded-full after:shadow-highlight after:transition-colors after:shadow-gray-300/20">
-        <nav className="flex items-center justify-center bg-background border rounded-full py-3 px-8 overflow-hidden">
+    <footer className="fixed bottom-10 flex w-[min(95%,650px)] items-center justify-center lg:bottom-16">
+      <div className="relative transition-colors after:pointer-events-none after:absolute after:inset-px after:rounded-full after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
+        <nav className="flex items-center justify-center overflow-hidden rounded-full border bg-background px-8 py-3">
           <ul className="flex items-center gap-8">
             {navLinks.map((navLink) => (
               <li className="flex-1" key={navLink.name}>
                 <Link
                   href={navLink.href}
-                  className="relative group flex flex-col items-center justify-center"
+                  className="group relative flex flex-col items-center justify-center"
                 >
                   <div
                     className={`${
@@ -34,9 +34,9 @@ const Footer = () => {
                       (navLink.name === "Home" && pathname === "/") ||
                       (navLink.name !== "Home" &&
                         isPathMatching(pathname, navLink.href))
-                        ? "translate-y-0 opacity-100 text-white"
-                        : "opacity-0 translate-y-full text-muted-foreground"
-                    } text-xs absolute -bottom-2 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-hover:text-white`}
+                        ? "translate-y-0 text-white opacity-100"
+                        : "translate-y-full text-muted-foreground opacity-0"
+                    } absolute -bottom-2 text-xs transition duration-300 group-hover:translate-y-0 group-hover:text-white group-hover:opacity-100`}
                   >
                     {navLink.name}
                   </div>

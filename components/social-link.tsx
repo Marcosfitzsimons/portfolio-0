@@ -8,7 +8,7 @@ const SocialLink = ({ children, href }: SocialLinkProps) => {
     <a
       href={href}
       target="_blank"
-      className="bg-secondary/50 backdrop-blur-sm text-secondary-foreground relative rounded-2xl transition-colors after:absolute after:pointer-events-none after:inset-px after:rounded-[15.5px] after:shadow-highlight after:transition-colors  after:shadow-gray-300/20 focus-within:after:shadow-gray-300/50 hover:bg-secondary/40 hover:text-white"
+      className="relative rounded-2xl bg-secondary/50 text-secondary-foreground backdrop-blur-sm transition-colors after:pointer-events-none after:absolute after:inset-px after:rounded-[15.5px] after:shadow-highlight after:shadow-gray-300/20  after:transition-colors focus-within:after:shadow-gray-300/50 hover:bg-secondary/40 hover:text-white"
     >
       {children}
     </a>

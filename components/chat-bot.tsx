@@ -84,18 +84,18 @@ const ChatBot = () => {
   }, [messages]);
 
   return (
-    <section className="w-[min(95%,650px)] flex flex-col gap-2">
+    <section className="flex w-[min(95%,650px)] flex-col gap-2">
       {messages.length > 0 && (
-        <ScrollArea className="h-[220px] w-full py-1 px-3 sm:h-[250px]">
+        <ScrollArea className="h-[220px] w-full px-3 py-1 sm:h-[250px]">
           {messages.map((message) => (
-            <div key={message.id} className="w-fit flex flex-col gap-1 mb-2">
+            <div key={message.id} className="mb-2 flex w-fit flex-col gap-1">
               {message.role === "user" ? (
-                <div className="select-none flex items-center gap-1 text-sm text-muted-foreground">
-                  <User strokeWidth="1.5" className="w-5 aspect-square" />
+                <div className="flex select-none items-center gap-1 text-sm text-muted-foreground">
+                  <User strokeWidth="1.5" className="aspect-square w-5" />
                   <span>You</span>
                 </div>
               ) : (
-                <div className="select-none flex items-center gap-1 text-sm ">
+                <div className="flex select-none items-center gap-1 text-sm ">
                   <Image
                     src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif"
                     alt="AI gif"
@@ -107,20 +107,20 @@ const ChatBot = () => {
               )}
               <ScrollArea
                 className={cn(
-                  "flex flex-col gap-1 rounded-lg rounded-tl-[3px] ml-6 border max-h-32",
+                  "ml-6 flex max-h-32 flex-col gap-1 rounded-lg rounded-tl-[3px] border",
                   message.role === "user"
                     ? "bg-secondary/60"
-                    : "bg-primary/20 border-primary/30"
+                    : "border-primary/30 bg-primary/20",
                 )}
               >
-                <p className="text-xs rounded-none px-4 py-1.5 md:text-sm">
+                <p className="rounded-none px-4 py-1.5 text-xs md:text-sm">
                   {message.content}
                 </p>
               </ScrollArea>
             </div>
           ))}
           {loading && (
-            <div className="flex items-center gap-1 text-sm pb-4">
+            <div className="flex items-center gap-1 pb-4 text-sm">
               <Image
                 src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif"
                 alt="AI gif"
@@ -137,7 +137,7 @@ const ChatBot = () => {
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="w-full relative flex items-center">
+          <div className="relative flex w-full items-center">
             <FormField
               control={form.control}
               name="question"
@@ -164,7 +164,7 @@ const ChatBot = () => {
                         variant: "ghost",
                         size: "icon",
                       }),
-                      "rounded-lg bg-transparent text-muted-foreground p-0 h-9 w-9 hover:bg-secondary"
+                      "h-9 w-9 rounded-lg bg-transparent p-0 text-muted-foreground hover:bg-secondary",
                     )}
                     type="submit"
                     disabled={loading}
@@ -173,7 +173,7 @@ const ChatBot = () => {
                     <span className="sr-only">Send question</span>
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs rounded-sm">
+                <TooltipContent side="top" className="rounded-sm text-xs">
                   Send question
                 </TooltipContent>
               </Tooltip>
