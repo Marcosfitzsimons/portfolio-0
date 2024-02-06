@@ -38,7 +38,13 @@ type Message = {
 };
 
 const ChatBot = () => {
-  const [messages, setMessages] = React.useState<Message[]>([]);
+  const [messages, setMessages] = React.useState<Message[]>([
+    {
+      id: generateRandomId(),
+      role: "assistant",
+      content: "Hi, ask something about me! 👋",
+    },
+  ]);
   const [loading, setLoading] = React.useState(false);
 
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
@@ -80,9 +86,9 @@ const ChatBot = () => {
   return (
     <section className="w-[min(95%,650px)] flex flex-col gap-2">
       {messages.length > 0 && (
-        <ScrollArea className="h-[250px] w-full py-1 px-3">
+        <ScrollArea className="h-[230px] w-full py-1 px-3 sm:h-[250px]">
           {messages.map((message) => (
-            <div key={message.id} className="flex flex-col gap-1 mb-2">
+            <div key={message.id} className="w-fit flex flex-col gap-1 mb-2">
               {message.role === "user" ? (
                 <div className="select-none flex items-center gap-1 text-sm text-muted-foreground">
                   <User strokeWidth="1.5" className="w-5 aspect-square" />
@@ -101,7 +107,7 @@ const ChatBot = () => {
               )}
               <ScrollArea
                 className={cn(
-                  "flex flex-col gap-1 rounded-lg rounded-tl-[3px] ml-6  border max-h-32",
+                  "flex flex-col gap-1 rounded-lg rounded-tl-[3px] ml-6 border max-h-32",
                   message.role === "user"
                     ? "bg-secondary/60"
                     : "bg-primary/20 border-primary/30"
@@ -145,9 +151,6 @@ const ChatBot = () => {
                       className="w-full rounded-lg text-xs md:text-sm"
                     />
                   </FormControl>
-                  <FormDescription className="text-xs">
-                    Ask something about me!
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
