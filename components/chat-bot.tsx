@@ -86,7 +86,7 @@ const ChatBot = () => {
   return (
     <section className="w-[min(95%,650px)] flex flex-col gap-2">
       {messages.length > 0 && (
-        <ScrollArea className="h-[230px] w-full py-1 px-3 sm:h-[250px]">
+        <ScrollArea className="h-[220px] w-full py-1 px-3 sm:h-[250px]">
           {messages.map((message) => (
             <div key={message.id} className="w-fit flex flex-col gap-1 mb-2">
               {message.role === "user" ? (
