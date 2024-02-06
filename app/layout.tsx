@@ -30,7 +30,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           Marcos Fitzsimons
         </span>
         <Blob />
-        <Toaster position="top-center" />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
