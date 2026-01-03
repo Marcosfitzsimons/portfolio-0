@@ -5,10 +5,10 @@ import { isPathMatching } from "@/lib/utils/isPathMatching";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const Footer = () => {
+const Nav = () => {
   const pathname = usePathname();
   return (
-    <footer className="fixed bottom-10 flex w-[min(95%,650px)] items-center justify-center lg:bottom-16">
+    <div className="flex w-[min(95%,650px)] items-center justify-center py-4">
       <div className="relative transition-colors after:pointer-events-none after:absolute after:inset-px after:rounded-full after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
         <nav className="flex items-center justify-center overflow-hidden rounded-full border bg-background px-8 py-3">
           <ul className="flex items-center gap-8">
@@ -46,8 +46,8 @@ const Footer = () => {
           </ul>
         </nav>
       </div>
-    </footer>
+    </div>
   );
 };
 
-export default Footer;
+export default Nav;
