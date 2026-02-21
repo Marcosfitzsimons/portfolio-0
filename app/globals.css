@@ -9,6 +9,9 @@
   .animation-delay-4000 {
     animation-delay: 4s;
   }
+  .field-sizing-content {
+    field-sizing: content;
+  }
 }
 
 .border {

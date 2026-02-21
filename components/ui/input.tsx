@@ -1,32 +1,22 @@
-import * as React from "react";
+import * as React from "react"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   ({ className, type, ...props }, ref) => {
     return (
-      <div className="flex flex-1 items-center">
-        <div
-          className="relative w-full before:pointer-events-none before:absolute before:-inset-1 before:rounded-[20px] before:border before:border-purple-500/70 before:opacity-0 before:ring-2 before:ring-purple-500/10 before:transition after:pointer-events-none
-      after:absolute after:inset-px after:rounded-[15px] after:shadow-highlight after:shadow-gray-300/20 after:transition focus-within:before:opacity-100 focus-within:after:shadow-purple-500"
-        >
-          <input
-            type={type}
-            className={cn(
-              "relative h-10 rounded-lg border bg-background px-3.5 py-2 text-sm shadow-input shadow-black/90 !outline-none placeholder:text-muted-foreground",
-              className,
-            )}
-            ref={ref}
-            {...props}
-          />
-        </div>
-      </div>
-    );
-  },
-);
-Input.displayName = "Input";
+      <input
+        type={type}
+        className={cn(
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+Input.displayName = "Input"
 
-export { Input };
+export { Input }

@@ -9,7 +9,7 @@ import Blob from "@/components/blob";
 
 const GeometricBackground = dynamic(
   () => import("@/components/geometric-background"),
-  { ssr: false }
+  { ssr: false },
 );
 
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${GeistSans.className} relative mx-auto flex w-[min(95%,650px)] flex-col items-center justify-center overflow-x-hidden antialiased`}
+        className={`${GeistSans.className} relative mx-auto flex w-[min(95%,750px)] flex-col items-center justify-center overflow-x-hidden antialiased`}
       >
         <Header />
         <Nav />

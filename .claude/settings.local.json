@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:elements.ai-sdk.dev)",
+      "Bash(head:*)"
+    ]
+  }
+}
