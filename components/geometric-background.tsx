@@ -340,6 +340,7 @@ function Scene({ shapes }: { shapes: ShapeConfig[] }) {
 // --- Main Component ---
 
 export default function GeometricBackground() {
+  console.log("[v0] GeometricBackground component mounted");
   const [breakpoint, setBreakpoint] = useState<
     "mobile" | "tablet" | "desktop"
   >("desktop");
