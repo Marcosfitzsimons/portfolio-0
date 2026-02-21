@@ -36,13 +36,14 @@
     "sonner": "^1.4.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.160.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/three": "^0.170.0",
+    "@types/three": "^0.160.0",
     "autoprefixer": "^10",
     "eslint": "^8",
     "eslint-config-next": "13.5.6",
@@ -52,7 +53,6 @@
     "prisma": "^5.4.2",
     "tailwindcss": "^3",
     "ts-node": "^10.9.1",
-    "three": "^0.170.0",
     "typescript": "^5.2.2"
   }
 }

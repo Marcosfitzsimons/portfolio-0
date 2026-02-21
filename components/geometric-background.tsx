@@ -1,15 +1,20 @@
 "use client";
 
-import { useRef, useMemo, useEffect, useState, useCallback } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useRef, useMemo, useEffect, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Edges } from "@react-three/drei";
 import * as THREE from "three";
 
 // --- Types ---
-
 interface ShapeConfig {
   id: string;
-  type: "hexPrism" | "stackedCubes" | "layeredDisc" | "steppedBlocks" | "octahedron" | "torus";
+  type:
+    | "hexPrism"
+    | "stackedCubes"
+    | "layeredDisc"
+    | "steppedBlocks"
+    | "octahedron"
+    | "torus";
   position: [number, number, number];
   rotation: [number, number, number];
   scale: number;
@@ -19,14 +24,11 @@ interface ShapeConfig {
   rotationSpeed: [number, number, number];
 }
 
-// --- Shape palette matching the blob (purple-400, pink-300, orange-300) ---
-
+// --- Warm colors matching the blob palette ---
 const WARM_COLORS = ["#c084fc", "#f9a8d4", "#fdba74", "#e879f9", "#fb923c"];
 
-// --- Shape definitions scattered in the left/right gutters ---
-
+// --- Shape configs scattered in left/right gutters ---
 const SHAPE_CONFIGS: ShapeConfig[] = [
-  // Left side shapes
   {
     id: "hex-left",
     type: "hexPrism",
@@ -60,7 +62,6 @@ const SHAPE_CONFIGS: ShapeConfig[] = [
     parallaxDepth: 0.5,
     rotationSpeed: [0.0008, 0.0015, 0.001],
   },
-  // Right side shapes
   {
     id: "steps-right",
     type: "steppedBlocks",
@@ -94,7 +95,6 @@ const SHAPE_CONFIGS: ShapeConfig[] = [
     parallaxDepth: 0.6,
     rotationSpeed: [0.0012, 0.0008, 0.002],
   },
-  // Additional accent shapes (further out)
   {
     id: "hex-right-far",
     type: "hexPrism",
@@ -119,7 +119,6 @@ const SHAPE_CONFIGS: ShapeConfig[] = [
   },
 ];
 
-// Reduced config for tablet screens
 const TABLET_SHAPE_IDS = [
   "hex-left",
   "steps-right",
@@ -127,20 +126,21 @@ const TABLET_SHAPE_IDS = [
   "disc-left",
 ];
 
-// --- Individual Shape Components ---
+// --- Invisible material reused across all shapes ---
+const invisibleMaterialProps = {
+  transparent: true,
+  opacity: 0,
+  depthWrite: false,
+} as const;
 
+// --- Individual Shape Components ---
 function HexPrism({ color, opacity }: { color: string; opacity: number }) {
   return (
     <mesh>
       <cylinderGeometry args={[1, 1, 1.2, 6]} />
-      <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      <Edges threshold={15} color={color} lineWidth={1}>
-        <lineBasicMaterial
-          color={color}
-          transparent
-          opacity={opacity}
-          depthWrite={false}
-        />
+      <meshBasicMaterial {...invisibleMaterialProps} />
+      <Edges color={color} threshold={15} scale={1}>
+        <lineBasicMaterial color={color} transparent opacity={opacity} />
       </Edges>
     </mesh>
   );
@@ -158,14 +158,9 @@ function StackedCubes({ color, opacity }: { color: string; opacity: number }) {
       {positions.map((pos, i) => (
         <mesh key={i} position={pos}>
           <boxGeometry args={[0.6, 0.6, 0.6]} />
-          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-          <Edges threshold={15} color={color} lineWidth={1}>
-            <lineBasicMaterial
-              color={color}
-              transparent
-              opacity={opacity}
-              depthWrite={false}
-            />
+          <meshBasicMaterial {...invisibleMaterialProps} />
+          <Edges color={color} threshold={15} scale={1}>
+            <lineBasicMaterial color={color} transparent opacity={opacity} />
           </Edges>
         </mesh>
       ))}
@@ -174,20 +169,14 @@ function StackedCubes({ color, opacity }: { color: string; opacity: number }) {
 }
 
 function LayeredDisc({ color, opacity }: { color: string; opacity: number }) {
-  const layers = 4;
   return (
     <group>
-      {Array.from({ length: layers }).map((_, i) => (
-        <mesh key={i} position={[0, (i - (layers - 1) / 2) * 0.35, 0]}>
+      {Array.from({ length: 4 }).map((_, i) => (
+        <mesh key={i} position={[0, (i - 1.5) * 0.35, 0]}>
           <cylinderGeometry args={[1 - i * 0.12, 1 - i * 0.12, 0.12, 16]} />
-          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-          <Edges threshold={15} color={color} lineWidth={1}>
-            <lineBasicMaterial
-              color={color}
-              transparent
-              opacity={opacity}
-              depthWrite={false}
-            />
+          <meshBasicMaterial {...invisibleMaterialProps} />
+          <Edges color={color} threshold={15} scale={1}>
+            <lineBasicMaterial color={color} transparent opacity={opacity} />
           </Edges>
         </mesh>
       ))}
@@ -202,20 +191,14 @@ function SteppedBlocks({
   color: string;
   opacity: number;
 }) {
-  const steps = 5;
   return (
     <group>
-      {Array.from({ length: steps }).map((_, i) => (
+      {Array.from({ length: 5 }).map((_, i) => (
         <mesh key={i} position={[i * 0.35, i * 0.35, 0]}>
           <boxGeometry args={[0.8, 0.3, 0.6]} />
-          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-          <Edges threshold={15} color={color} lineWidth={1}>
-            <lineBasicMaterial
-              color={color}
-              transparent
-              opacity={opacity}
-              depthWrite={false}
-            />
+          <meshBasicMaterial {...invisibleMaterialProps} />
+          <Edges color={color} threshold={15} scale={1}>
+            <lineBasicMaterial color={color} transparent opacity={opacity} />
           </Edges>
         </mesh>
       ))}
@@ -233,14 +216,9 @@ function OctahedronShape({
   return (
     <mesh>
       <octahedronGeometry args={[1, 0]} />
-      <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      <Edges threshold={15} color={color} lineWidth={1}>
-        <lineBasicMaterial
-          color={color}
-          transparent
-          opacity={opacity}
-          depthWrite={false}
-        />
+      <meshBasicMaterial {...invisibleMaterialProps} />
+      <Edges color={color} threshold={15} scale={1}>
+        <lineBasicMaterial color={color} transparent opacity={opacity} />
       </Edges>
     </mesh>
   );
@@ -250,26 +228,16 @@ function TorusShape({ color, opacity }: { color: string; opacity: number }) {
   return (
     <mesh>
       <torusGeometry args={[0.8, 0.25, 8, 16]} />
-      <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      <Edges threshold={15} color={color} lineWidth={1}>
-        <lineBasicMaterial
-          color={color}
-          transparent
-          opacity={opacity}
-          depthWrite={false}
-        />
+      <meshBasicMaterial {...invisibleMaterialProps} />
+      <Edges color={color} threshold={15} scale={1}>
+        <lineBasicMaterial color={color} transparent opacity={opacity} />
       </Edges>
     </mesh>
   );
 }
 
 // --- Shape Renderer ---
-
-function ShapeRenderer({
-  config,
-}: {
-  config: ShapeConfig;
-}) {
+function ShapeRenderer({ config }: { config: ShapeConfig }) {
   switch (config.type) {
     case "hexPrism":
       return <HexPrism color={config.color} opacity={config.opacity} />;
@@ -288,8 +256,7 @@ function ShapeRenderer({
   }
 }
 
-// --- Animated Shape Wrapper with Parallax ---
-
+// --- Animated Shape with Parallax ---
 function AnimatedShape({
   config,
   mouse,
@@ -297,15 +264,17 @@ function AnimatedShape({
   config: ShapeConfig;
   mouse: React.RefObject<{ x: number; y: number }>;
 }) {
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<THREE.Group>(null!);
   const currentOffset = useRef({ x: 0, y: 0 });
 
   useFrame(() => {
-    if (!groupRef.current || !mouse.current) return;
+    if (!groupRef.current) return;
 
-    // Smooth parallax offset based on mouse
-    const targetX = mouse.current.x * config.parallaxDepth * 0.3;
-    const targetY = mouse.current.y * config.parallaxDepth * 0.3;
+    const mx = mouse.current?.x ?? 0;
+    const my = mouse.current?.y ?? 0;
+
+    const targetX = mx * config.parallaxDepth * 0.3;
+    const targetY = my * config.parallaxDepth * 0.3;
 
     currentOffset.current.x = THREE.MathUtils.lerp(
       currentOffset.current.x,
@@ -318,13 +287,11 @@ function AnimatedShape({
       0.05
     );
 
-    // Apply position with parallax offset
     groupRef.current.position.x =
       config.position[0] + currentOffset.current.x;
     groupRef.current.position.y =
       config.position[1] + currentOffset.current.y;
 
-    // Subtle continuous rotation
     groupRef.current.rotation.x += config.rotationSpeed[0];
     groupRef.current.rotation.y += config.rotationSpeed[1];
     groupRef.current.rotation.z += config.rotationSpeed[2];
@@ -342,23 +309,10 @@ function AnimatedShape({
   );
 }
 
-// --- Scene that tracks mouse and renders shapes ---
-
+// --- Scene ---
 function Scene({ shapes }: { shapes: ShapeConfig[] }) {
   const mouse = useRef({ x: 0, y: 0 });
-  const { size } = useThree();
 
-  const handlePointerMove = useCallback(
-    (e: THREE.Event & { clientX?: number; clientY?: number }) => {
-      // Normalize mouse position to [-1, 1]
-      const event = e as unknown as PointerEvent;
-      mouse.current.x = (event.clientX / size.width) * 2 - 1;
-      mouse.current.y = -(event.clientY / size.height) * 2 + 1;
-    },
-    [size.width, size.height]
-  );
-
-  // Also listen on window so we pick up mouse even when pointer-events: none
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -369,31 +323,30 @@ function Scene({ shapes }: { shapes: ShapeConfig[] }) {
   }, []);
 
   return (
-    <group onPointerMove={handlePointerMove}>
+    <>
       {shapes.map((config) => (
         <AnimatedShape key={config.id} config={config} mouse={mouse} />
       ))}
-    </group>
+    </>
   );
 }
 
 // --- Main Component ---
-
 export default function GeometricBackground() {
   const [breakpoint, setBreakpoint] = useState<
     "mobile" | "tablet" | "desktop"
   >("desktop");
 
   useEffect(() => {
-    const checkBreakpoint = () => {
+    const check = () => {
       const w = window.innerWidth;
       if (w < 768) setBreakpoint("mobile");
       else if (w < 1024) setBreakpoint("tablet");
       else setBreakpoint("desktop");
     };
-    checkBreakpoint();
-    window.addEventListener("resize", checkBreakpoint);
-    return () => window.removeEventListener("resize", checkBreakpoint);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
   const shapes = useMemo(() => {
@@ -403,7 +356,6 @@ export default function GeometricBackground() {
     return SHAPE_CONFIGS;
   }, [breakpoint]);
 
-  // Don't render anything on mobile
   if (breakpoint === "mobile") return null;
 
   return (
@@ -414,7 +366,7 @@ export default function GeometricBackground() {
       <Canvas
         dpr={[1, 1.5]}
         camera={{ position: [0, 0, 10], fov: 50 }}
-        gl={{ alpha: true, antialias: true }}
+        gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
         style={{ background: "transparent" }}
       >
         <Scene shapes={shapes} />
