@@ -22,4 +22,7 @@ model Project {
   mobileImages String[]
   isPersonal   Boolean
   date         String
+  tags         String[]
+  status       String?
+  year         String?
 }

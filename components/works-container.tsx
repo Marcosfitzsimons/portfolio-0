@@ -1,8 +1,12 @@
-import React from "react";
+import type React from "react";
 
-const WorksContainer = ({ children }: { children: React.ReactNode }) => {
+interface WorksContainerProps {
+  children: React.ReactNode;
+}
+
+const WorksContainer = ({ children }: WorksContainerProps) => {
   return (
-    <div className="flex flex-col items-center gap-10 sm:grid sm:grid-cols-2 sm:items-start">
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10">
       {children}
     </div>
   );

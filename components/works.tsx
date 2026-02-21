@@ -1,38 +1,14 @@
 import { getWorkProjects } from "@/lib/projects";
 import Work from "./work";
 import WorksContainer from "./works-container";
-
-// Development
-// async function getAllProjects() {
-//   const res = await fetch(
-//     `${process.env.BASE_URL}/api/projects/getAllProjects`,
-//     {
-//       cache: "no-store",
-//     }
-//   );
-//   return res.json();
-// }
+import type { Project } from "@/lib/project-types";
 
 const Works = async () => {
-  const data:
-    | {
-        id: number;
-        title: string;
-        description: string;
-        stack: string;
-        siteUrl: string;
-        coverImageSm: string;
-        coverImage: string;
-        images: string[];
-        mobileImages: string[];
-        isPersonal: boolean;
-        date: string;
-      }[]
-    | null = await getWorkProjects();
+  const data = await getWorkProjects();
 
-  if (data === null) {
+  if (data === null || data.length === 0) {
     return (
-      <div className="mt-16 flex items-center justify-center">
+      <div className="mt-16 flex items-center justify-center text-muted-foreground">
         Projects not found
       </div>
     );
@@ -41,7 +17,7 @@ const Works = async () => {
   return (
     <WorksContainer>
       {data.map((project) => (
-        <Work key={project.id} {...project} />
+        <Work key={project.id} {...(project as Project)} />
       ))}
     </WorksContainer>
   );
