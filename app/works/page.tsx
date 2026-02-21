@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const WorksPage = () => {
   return (
     <section className="flex flex-col gap-16 py-5 pb-10 sm:mx-auto sm:w-[80%]">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="flex w-full items-end justify-between">
           <div className="flex flex-col gap-1.5">
             <h2 className="text-2xl font-semibold leading-tight">Works</h2>
@@ -37,7 +37,10 @@ const WorksPage = () => {
         </Suspense>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div
+        className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700"
+        style={{ animationDelay: "200ms" }}
+      >
         <div className="flex flex-col gap-1.5">
           <h2 className="text-2xl font-semibold leading-tight">
             Exploration & Learning
