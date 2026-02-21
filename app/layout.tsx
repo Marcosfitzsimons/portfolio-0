@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Toaster } from "@/components/ui/sonner";
 import { GeistSans } from "geist/font";
 import "./globals.css";
 import Header from "@/components/header";
 import Nav from "@/components/nav";
 import Blob from "@/components/blob";
+
+const GeometricBackground = dynamic(
+  () => import("@/components/geometric-background"),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +36,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           Marcos Fitzsimons
         </span>
         <Blob />
+        <GeometricBackground />
         <Toaster position="top-center" richColors />
       </body>
     </html>
