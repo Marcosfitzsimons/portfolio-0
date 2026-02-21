@@ -23,7 +23,6 @@
     "ai": "^6.0.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "@react-three/drei": "^9.117.3",
     "@react-three/fiber": "^8.17.10",
     "geist": "^1.0.0",
     "lucide-react": "^0.323.0",

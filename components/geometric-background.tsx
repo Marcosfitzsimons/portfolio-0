@@ -2,10 +2,10 @@
 
 import { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Edges } from "@react-three/drei";
 import * as THREE from "three";
 
 // --- Types ---
+
 interface ShapeConfig {
   id: string;
   type:
@@ -24,10 +24,12 @@ interface ShapeConfig {
   rotationSpeed: [number, number, number];
 }
 
-// --- Warm colors matching the blob palette ---
+// --- Shape palette matching the blob (warm tones) ---
+
 const WARM_COLORS = ["#c084fc", "#f9a8d4", "#fdba74", "#e879f9", "#fb923c"];
 
-// --- Shape configs scattered in left/right gutters ---
+// --- Shape definitions scattered in left/right gutters ---
+
 const SHAPE_CONFIGS: ShapeConfig[] = [
   {
     id: "hex-left",
@@ -119,66 +121,84 @@ const SHAPE_CONFIGS: ShapeConfig[] = [
   },
 ];
 
-const TABLET_SHAPE_IDS = [
-  "hex-left",
-  "steps-right",
-  "octa-right",
-  "disc-left",
-];
+const TABLET_SHAPE_IDS = ["hex-left", "steps-right", "octa-right", "disc-left"];
 
-// --- Invisible material reused across all shapes ---
-const invisibleMaterialProps = {
-  transparent: true,
-  opacity: 0,
-  depthWrite: false,
-} as const;
+// --- Wireframe shape using native Three.js EdgesGeometry ---
 
-// --- Individual Shape Components ---
-function HexPrism({ color, opacity }: { color: string; opacity: number }) {
+function WireframeEdges({
+  geometry,
+  color,
+  opacity,
+}: {
+  geometry: THREE.BufferGeometry;
+  color: string;
+  opacity: number;
+}) {
+  const edgesGeo = useMemo(
+    () => new THREE.EdgesGeometry(geometry, 15),
+    [geometry]
+  );
+
   return (
-    <mesh>
-      <cylinderGeometry args={[1, 1, 1.2, 6]} />
-      <meshBasicMaterial {...invisibleMaterialProps} />
-      <Edges color={color} threshold={15} scale={1}>
-        <lineBasicMaterial color={color} transparent opacity={opacity} />
-      </Edges>
-    </mesh>
+    <lineSegments geometry={edgesGeo}>
+      <lineBasicMaterial
+        color={color}
+        transparent
+        opacity={opacity}
+        depthWrite={false}
+      />
+    </lineSegments>
   );
 }
 
+// --- Individual Shape Components ---
+
+function HexPrism({ color, opacity }: { color: string; opacity: number }) {
+  const geo = useMemo(() => new THREE.CylinderGeometry(1, 1, 1.2, 6), []);
+  return <WireframeEdges geometry={geo} color={color} opacity={opacity} />;
+}
+
 function StackedCubes({ color, opacity }: { color: string; opacity: number }) {
-  const positions: [number, number, number][] = [
-    [0, 0.6, 0],
-    [0, -0.6, 0],
-    [0.5, 0, 0.5],
-    [-0.5, 0, -0.5],
-  ];
+  const geo = useMemo(() => new THREE.BoxGeometry(0.6, 0.6, 0.6), []);
+  const positions: [number, number, number][] = useMemo(
+    () => [
+      [0, 0.6, 0],
+      [0, -0.6, 0],
+      [0.5, 0, 0.5],
+      [-0.5, 0, -0.5],
+    ],
+    []
+  );
+
   return (
     <group>
       {positions.map((pos, i) => (
-        <mesh key={i} position={pos}>
-          <boxGeometry args={[0.6, 0.6, 0.6]} />
-          <meshBasicMaterial {...invisibleMaterialProps} />
-          <Edges color={color} threshold={15} scale={1}>
-            <lineBasicMaterial color={color} transparent opacity={opacity} />
-          </Edges>
-        </mesh>
+        <group key={i} position={pos}>
+          <WireframeEdges geometry={geo} color={color} opacity={opacity} />
+        </group>
       ))}
     </group>
   );
 }
 
 function LayeredDisc({ color, opacity }: { color: string; opacity: number }) {
+  const layers = 4;
+  const geometries = useMemo(
+    () =>
+      Array.from(
+        { length: layers },
+        (_, i) =>
+          new THREE.CylinderGeometry(1 - i * 0.12, 1 - i * 0.12, 0.12, 16)
+      ),
+    []
+  );
+
   return (
     <group>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <mesh key={i} position={[0, (i - 1.5) * 0.35, 0]}>
-          <cylinderGeometry args={[1 - i * 0.12, 1 - i * 0.12, 0.12, 16]} />
-          <meshBasicMaterial {...invisibleMaterialProps} />
-          <Edges color={color} threshold={15} scale={1}>
-            <lineBasicMaterial color={color} transparent opacity={opacity} />
-          </Edges>
-        </mesh>
+      {geometries.map((geo, i) => (
+        <group key={i} position={[0, (i - (layers - 1) / 2) * 0.35, 0]}>
+          <WireframeEdges geometry={geo} color={color} opacity={opacity} />
+        </group>
       ))}
     </group>
   );
@@ -191,16 +211,14 @@ function SteppedBlocks({
   color: string;
   opacity: number;
 }) {
+  const geo = useMemo(() => new THREE.BoxGeometry(0.8, 0.3, 0.6), []);
+
   return (
     <group>
       {Array.from({ length: 5 }).map((_, i) => (
-        <mesh key={i} position={[i * 0.35, i * 0.35, 0]}>
-          <boxGeometry args={[0.8, 0.3, 0.6]} />
-          <meshBasicMaterial {...invisibleMaterialProps} />
-          <Edges color={color} threshold={15} scale={1}>
-            <lineBasicMaterial color={color} transparent opacity={opacity} />
-          </Edges>
-        </mesh>
+        <group key={i} position={[i * 0.35, i * 0.35, 0]}>
+          <WireframeEdges geometry={geo} color={color} opacity={opacity} />
+        </group>
       ))}
     </group>
   );
@@ -213,30 +231,17 @@ function OctahedronShape({
   color: string;
   opacity: number;
 }) {
-  return (
-    <mesh>
-      <octahedronGeometry args={[1, 0]} />
-      <meshBasicMaterial {...invisibleMaterialProps} />
-      <Edges color={color} threshold={15} scale={1}>
-        <lineBasicMaterial color={color} transparent opacity={opacity} />
-      </Edges>
-    </mesh>
-  );
+  const geo = useMemo(() => new THREE.OctahedronGeometry(1, 0), []);
+  return <WireframeEdges geometry={geo} color={color} opacity={opacity} />;
 }
 
 function TorusShape({ color, opacity }: { color: string; opacity: number }) {
-  return (
-    <mesh>
-      <torusGeometry args={[0.8, 0.25, 8, 16]} />
-      <meshBasicMaterial {...invisibleMaterialProps} />
-      <Edges color={color} threshold={15} scale={1}>
-        <lineBasicMaterial color={color} transparent opacity={opacity} />
-      </Edges>
-    </mesh>
-  );
+  const geo = useMemo(() => new THREE.TorusGeometry(0.8, 0.25, 8, 16), []);
+  return <WireframeEdges geometry={geo} color={color} opacity={opacity} />;
 }
 
 // --- Shape Renderer ---
+
 function ShapeRenderer({ config }: { config: ShapeConfig }) {
   switch (config.type) {
     case "hexPrism":
@@ -248,7 +253,9 @@ function ShapeRenderer({ config }: { config: ShapeConfig }) {
     case "steppedBlocks":
       return <SteppedBlocks color={config.color} opacity={config.opacity} />;
     case "octahedron":
-      return <OctahedronShape color={config.color} opacity={config.opacity} />;
+      return (
+        <OctahedronShape color={config.color} opacity={config.opacity} />
+      );
     case "torus":
       return <TorusShape color={config.color} opacity={config.opacity} />;
     default:
@@ -256,7 +263,8 @@ function ShapeRenderer({ config }: { config: ShapeConfig }) {
   }
 }
 
-// --- Animated Shape with Parallax ---
+// --- Animated Shape Wrapper with Parallax ---
+
 function AnimatedShape({
   config,
   mouse,
@@ -264,17 +272,14 @@ function AnimatedShape({
   config: ShapeConfig;
   mouse: React.RefObject<{ x: number; y: number }>;
 }) {
-  const groupRef = useRef<THREE.Group>(null!);
+  const groupRef = useRef<THREE.Group>(null);
   const currentOffset = useRef({ x: 0, y: 0 });
 
   useFrame(() => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !mouse.current) return;
 
-    const mx = mouse.current?.x ?? 0;
-    const my = mouse.current?.y ?? 0;
-
-    const targetX = mx * config.parallaxDepth * 0.3;
-    const targetY = my * config.parallaxDepth * 0.3;
+    const targetX = mouse.current.x * config.parallaxDepth * 0.3;
+    const targetY = mouse.current.y * config.parallaxDepth * 0.3;
 
     currentOffset.current.x = THREE.MathUtils.lerp(
       currentOffset.current.x,
@@ -310,6 +315,7 @@ function AnimatedShape({
 }
 
 // --- Scene ---
+
 function Scene({ shapes }: { shapes: ShapeConfig[] }) {
   const mouse = useRef({ x: 0, y: 0 });
 
@@ -332,6 +338,7 @@ function Scene({ shapes }: { shapes: ShapeConfig[] }) {
 }
 
 // --- Main Component ---
+
 export default function GeometricBackground() {
   const [breakpoint, setBreakpoint] = useState<
     "mobile" | "tablet" | "desktop"
@@ -366,7 +373,7 @@ export default function GeometricBackground() {
       <Canvas
         dpr={[1, 1.5]}
         camera={{ position: [0, 0, 10], fov: 50 }}
-        gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
+        gl={{ alpha: true, antialias: true }}
         style={{ background: "transparent" }}
       >
         <Scene shapes={shapes} />
