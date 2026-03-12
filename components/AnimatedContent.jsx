@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const AnimatedContent = ({
   children,
-  container,
+  container = null,
   distance = 100,
   direction = 'vertical',
   reverse = false,
@@ -22,8 +22,8 @@ const AnimatedContent = ({
   disappearAfter = 0,
   disappearDuration = 0.5,
   disappearEase = 'power3.in',
-  onComplete,
-  onDisappearanceComplete,
+  onComplete = undefined,
+  onDisappearanceComplete = undefined,
   className = '',
   ...props
 }) => {
