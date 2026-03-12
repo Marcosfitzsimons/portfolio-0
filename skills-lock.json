@@ -11,6 +11,11 @@
       "sourceType": "github",
       "computedHash": "cb71f9b5e9cf87c2e0a69384347818ddbbf50dd372cf7e7f90877b397de87e83"
     },
+    "framer-motion-animator": {
+      "source": "patricio0312rev/skills",
+      "sourceType": "github",
+      "computedHash": "22a8401fab0cdf32d5c153b98aba5e95435a479810896879535dc7ac3710efbe"
+    },
     "skill-creator": {
       "source": "vercel-labs/agent-browser",
       "sourceType": "github",

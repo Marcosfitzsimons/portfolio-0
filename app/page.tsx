@@ -4,31 +4,26 @@ import SecondaryButton from "@/components/secondary-button";
 import SocialLinks from "@/components/social-links";
 import { sora } from "@/components/fonts";
 import { User } from "lucide-react";
+import AnimatedContent from "@/components/AnimatedContent";
 
 export default function Home() {
   return (
     <main className="flex flex-col items-center justify-center">
       <div className="flex w-full flex-col items-center gap-1 py-16 md:gap-3 md:py-32">
-        <div className="flex flex-col items-center duration-700 animate-in fade-in slide-in-from-bottom-4">
+        <AnimatedContent direction="vertical" delay={0} className="flex flex-col items-center">
           <h1 className={`${sora.className} font-semibold lg:text-2xl`}>
             Marcos Fitzsimons
           </h1>
           <h2 className={`${sora.className} text-2xl font-bold lg:text-4xl`}>
             Full Stack Developer
           </h2>
-        </div>
+        </AnimatedContent>
 
-        <div
-          className="duration-700 animate-in fade-in slide-in-from-bottom-4"
-          style={{ animationDelay: "150ms" }}
-        >
+        <AnimatedContent direction="vertical" delay={0.15}>
           <SocialLinks />
-        </div>
+        </AnimatedContent>
 
-        <div
-          className="flex items-center gap-3 py-10 duration-700 animate-in fade-in slide-in-from-bottom-4"
-          style={{ animationDelay: "300ms" }}
-        >
+        <AnimatedContent direction="vertical" delay={0.3} className="flex items-center gap-3 py-10">
           <PrimaryButton />
           <SecondaryButton
             href="/about"
@@ -36,14 +31,11 @@ export default function Home() {
           >
             About me
           </SecondaryButton>
-        </div>
+        </AnimatedContent>
 
-        <div
-          className="w-full duration-700 animate-in fade-in slide-in-from-bottom-4"
-          style={{ animationDelay: "450ms" }}
-        >
+        <AnimatedContent direction="vertical" delay={0.45} className="w-full">
           <ChatBot />
-        </div>
+        </AnimatedContent>
       </div>
     </main>
   );

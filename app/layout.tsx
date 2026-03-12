@@ -5,12 +5,16 @@ import { GeistSans } from "geist/font";
 import "./globals.css";
 import Header from "@/components/header";
 import Nav from "@/components/nav";
-import Blob from "@/components/blob";
+// import Blob from "@/components/blob";
 
-const GeometricBackground = dynamic(
-  () => import("@/components/geometric-background"),
-  { ssr: false },
-);
+// const GeometricBackground = dynamic(
+//   () => import("@/components/geometric-background"),
+//   { ssr: false },
+// );
+
+const LightPillar = dynamic(() => import("@/components/LightPillar"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: {
@@ -35,8 +39,31 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           Made w. <span className="group-hover:animate-pulse">🤍</span> by
           Marcos Fitzsimons
         </span>
-        <Blob />
-        <GeometricBackground />
+        {/* <Blob /> */}
+        {/* <GeometricBackground /> */}
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: -10,
+            pointerEvents: "none",
+          }}
+        >
+          <LightPillar
+            topColor="#5227FF"
+            bottomColor="#FF9FFC"
+            intensity={1}
+            rotationSpeed={0.3}
+            glowAmount={0.002}
+            pillarWidth={3}
+            pillarHeight={0.4}
+            noiseIntensity={0.5}
+            pillarRotation={25}
+            interactive={false}
+            mixBlendMode="screen"
+            quality="high"
+          />
+        </div>
         <Toaster position="top-center" richColors />
       </body>
     </html>

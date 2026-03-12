@@ -5,6 +5,7 @@ import { Github } from "lucide-react";
 import Link from "next/link";
 import WorksSkeleton from "@/components/skeletons/works-skeleton";
 import { Metadata } from "next";
+import AnimatedContent from "@/components/AnimatedContent";
 
 export const metadata: Metadata = {
   title: "Works",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 const WorksPage = () => {
   return (
     <section className="flex flex-col gap-16 py-5 pb-10 sm:mx-auto sm:w-[80%]">
-      <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <AnimatedContent direction="horizontal" reverse={true} delay={0} className="flex flex-col gap-4">
         <div className="flex w-full items-end justify-between">
           <div className="flex flex-col gap-1.5">
             <h2 className="text-2xl font-semibold leading-tight">Works</h2>
@@ -35,12 +36,9 @@ const WorksPage = () => {
         <Suspense fallback={<WorksSkeleton />}>
           <Works />
         </Suspense>
-      </div>
+      </AnimatedContent>
 
-      <div
-        className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700"
-        style={{ animationDelay: "200ms" }}
-      >
+      <AnimatedContent direction="horizontal" reverse={true} delay={0.2} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <h2 className="text-2xl font-semibold leading-tight">
             Exploration & Learning
@@ -53,7 +51,7 @@ const WorksPage = () => {
         <Suspense fallback={<WorksSkeleton />}>
           <PersonalProjects />
         </Suspense>
-      </div>
+      </AnimatedContent>
     </section>
   );
 };
