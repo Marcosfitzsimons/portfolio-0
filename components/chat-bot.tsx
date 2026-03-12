@@ -75,13 +75,14 @@ const ChatBot = () => {
   };
 
   return (
-    <section className="mx-auto flex w-[min(95%,650px)] flex-col gap-2">
+    <div className="relative mx-auto w-[min(95%,650px)] after:pointer-events-none after:absolute after:inset-px after:rounded-2xl after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
+      <section className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-background/60 p-4 backdrop-blur-md">
       <div
         className={cn(
           "overflow-hidden transition-all duration-500 ease-in-out",
           messages.length > 0
             ? "max-h-[200px] opacity-100"
-            : "mt-10 max-h-0 opacity-0",
+            : "max-h-0 opacity-0",
         )}
       >
         <ScrollArea className="h-[180px] w-full px-3 py-1">
@@ -181,7 +182,8 @@ const ChatBot = () => {
           </PromptInputFooter>
         </PromptInput>
       </div>
-    </section>
+      </section>
+    </div>
   );
 };
 
