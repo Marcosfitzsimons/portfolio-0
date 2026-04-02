@@ -102,120 +102,177 @@ const ChatBot = () => {
 
   return (
     <div className="relative mx-auto w-[min(95%,650px)] after:pointer-events-none after:absolute after:inset-px after:rounded-2xl after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
-      <section className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-background/60 p-4 backdrop-blur-md">
-        <div
-          className={cn(
-            "overflow-hidden transition-all duration-500 ease-in-out",
-            messages.length > 0
-              ? "max-h-[200px] opacity-100"
-              : "max-h-0 opacity-0",
-          )}
-        >
-          <ScrollArea className="h-[180px] w-full px-3 py-1">
-            {messages.map((message) => {
-              const content = getMessageText(message);
-
-              const isUser = message.role === "user";
-
-              return (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "mb-2 flex flex-col gap-1",
-                    isUser ? "items-end" : "w-fit items-start",
-                  )}
-                >
-                  {isUser ? (
-                    <div className="flex select-none items-center gap-1 text-sm text-muted-foreground">
-                      <User strokeWidth="1.5" className="aspect-square w-5" />
-                      <span>You</span>
-                    </div>
-                  ) : (
-                    <div className="flex select-none items-center gap-1 text-sm">
-                      <Image
-                        src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif"
-                        alt="AI gif"
-                        width={22}
-                        height={22}
-                      />
-                      <span>AI Chatbot</span>
-                    </div>
-                  )}
-                  <ScrollArea
-                    className={cn(
-                      "flex max-h-32 flex-col gap-1 rounded-lg border",
-                      isUser
-                        ? "mr-6 rounded-tr-[3px] bg-secondary/60"
-                        : "ml-6 rounded-tl-[3px] border-primary/30 bg-primary/20",
-                    )}
-                  >
-                    {isUser ? (
-                      <p className="rounded-none px-4 py-1.5 text-xs md:text-sm">
-                        {content}
-                      </p>
-                    ) : (
-                      <div className="chat-markdown rounded-none px-4 py-1.5 text-xs md:text-sm">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {content}
-                        </ReactMarkdown>
-                      </div>
-                    )}
-                  </ScrollArea>
-                </div>
-              );
-            })}
-            {isLoading && messages[messages.length - 1]?.role === "user" && (
-              <div className="flex items-center gap-1 pb-4 text-sm">
-                <Image
-                  src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif"
-                  alt="AI gif"
-                  width={22}
-                  height={22}
-                />
-                <span className="animate-pulse text-xs text-muted-foreground">
-                  generating...
-                </span>
-              </div>
-            )}
-            <div ref={bottomRef} />
-          </ScrollArea>
-        </div>
-        <Suggestions>
-          {SUGGESTIONS.map((s) => (
-            <Suggestion
-              key={s}
-              suggestion={s}
-              onClick={handleSuggestion}
-              disabled={isLoading}
+      <section
+        className={cn(
+          "flex flex-col rounded-2xl border border-white/10 bg-background/60 backdrop-blur-md transition-all duration-300 ease-out",
+          isExpanded ? "gap-3 p-4" : "p-0"
+        )}
+      >
+        {/* Collapsed View */}
+        {!isExpanded && (
+          <div
+            onClick={handleExpand}
+            className="flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors hover:bg-white/5 rounded-2xl"
+          >
+            <input
+              type="text"
+              readOnly
+              placeholder="Ask me anything..."
+              className="flex-1 bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground outline-none cursor-pointer"
             />
-          ))}
-        </Suggestions>
-        <div
-          ref={inputWrapperRef}
-          className="relative w-full before:pointer-events-none before:absolute before:-inset-1 before:rounded-[20px] before:border before:border-purple-500/70 before:opacity-0 before:ring-2 before:ring-purple-500/10 before:transition focus-within:before:opacity-100"
-        >
-          <PromptInput onSubmit={handleSubmit} className="w-full">
-            <PromptInputBody>
-              <PromptInputTextarea
-                placeholder="Pick a suggestion or ask anything about me…"
-                disabled={isLoading}
-                maxLength={160}
-                minLength={3}
-                className="text-xs md:text-sm"
-              />
-            </PromptInputBody>
-            <PromptInputFooter className="justify-end">
-              <PromptInputTools>
-                <PromptInputSubmit
-                  status={status}
-                  onStop={stop}
-                  size="sm"
-                  className="rounded-xl px-3"
+            <button
+              type="button"
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-colors hover:bg-secondary/80"
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Expanded View */}
+        {isExpanded && (
+          <>
+            {/* Collapse Button */}
+            <div className="flex justify-end">
+              <button
+                onClick={handleCollapse}
+                className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/10 hover:text-white"
+                aria-label="Collapse chat"
+              >
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Messages Area */}
+            <div
+              className={cn(
+                "overflow-hidden transition-all duration-300 ease-out",
+                messages.length > 0
+                  ? "max-h-[200px] opacity-100"
+                  : "max-h-0 opacity-0"
+              )}
+            >
+              <ScrollArea className="h-[180px] w-full px-1 py-1">
+                {messages.map((message) => {
+                  const content = getMessageText(message);
+                  const isUser = message.role === "user";
+
+                  return (
+                    <div
+                      key={message.id}
+                      className={cn(
+                        "mb-3 flex flex-col gap-1",
+                        isUser ? "items-end" : "w-fit items-start"
+                      )}
+                    >
+                      {isUser ? (
+                        <div className="flex select-none items-center gap-1 text-sm text-muted-foreground">
+                          <User strokeWidth="1.5" className="aspect-square w-5" />
+                          <span>You</span>
+                        </div>
+                      ) : (
+                        <div className="flex select-none items-center gap-1 text-sm text-white">
+                          <Image
+                            src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif"
+                            alt="AI gif"
+                            width={22}
+                            height={22}
+                          />
+                          <span>AI Chatbot</span>
+                        </div>
+                      )}
+                      <ScrollArea
+                        className={cn(
+                          "flex max-h-32 flex-col gap-1 rounded-lg border",
+                          isUser
+                            ? "mr-6 rounded-tr-[3px] border-primary/30 bg-primary/15"
+                            : "ml-6 rounded-tl-[3px] border-secondary/50 bg-secondary/40"
+                        )}
+                      >
+                        {isUser ? (
+                          <p className={cn(
+                            "rounded-none px-4 py-2 text-xs md:text-sm text-white"
+                          )}>
+                            {content}
+                          </p>
+                        ) : (
+                          <div className="chat-markdown rounded-none px-4 py-2 text-xs md:text-sm text-muted-foreground">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {content}
+                            </ReactMarkdown>
+                          </div>
+                        )}
+                      </ScrollArea>
+                    </div>
+                  );
+                })}
+                {isLoading && messages[messages.length - 1]?.role === "user" && (
+                  <div className="flex items-center gap-1 pb-4 text-sm">
+                    <Image
+                      src="https://www.gstatic.com/lamda/images/sparkle_resting_v2_darkmode_2bdb7df2724e450073ede.gif"
+                      alt="AI gif"
+                      width={22}
+                      height={22}
+                    />
+                    <span className="animate-pulse text-xs text-muted-foreground">
+                      generating...
+                    </span>
+                  </div>
+                )}
+                <div ref={bottomRef} />
+              </ScrollArea>
+            </div>
+
+            {/* Suggestions */}
+            <Suggestions>
+              {SUGGESTIONS.map((s) => (
+                <Suggestion
+                  key={s}
+                  suggestion={s}
+                  onClick={handleSuggestion}
+                  disabled={isLoading}
+                  className="border-white/10 bg-secondary/50 text-white hover:bg-secondary hover:text-white"
                 />
-              </PromptInputTools>
-            </PromptInputFooter>
-          </PromptInput>
-        </div>
+              ))}
+            </Suggestions>
+
+            {/* Input Area */}
+            <div
+              ref={inputWrapperRef}
+              className="relative w-full"
+            >
+              <PromptInput
+                onSubmit={handleSubmit}
+                className="w-full border-white/10 bg-secondary/30 transition-all duration-200 focus-within:border-white/25 focus-within:bg-secondary/40 focus-within:ring-1 focus-within:ring-white/10"
+              >
+                <PromptInputBody>
+                  <PromptInputTextarea
+                    placeholder="Pick a suggestion or ask anything about me..."
+                    disabled={isLoading}
+                    maxLength={160}
+                    minLength={3}
+                    className="text-xs text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm"
+                  />
+                </PromptInputBody>
+                <PromptInputFooter className="justify-end">
+                  <PromptInputTools>
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-colors hover:bg-secondary/80 disabled:opacity-50"
+                    >
+                      {isLoading ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
+                    </button>
+                  </PromptInputTools>
+                </PromptInputFooter>
+              </PromptInput>
+            </div>
+          </>
+        )}
       </section>
     </div>
   );
