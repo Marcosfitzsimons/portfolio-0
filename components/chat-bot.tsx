@@ -10,7 +10,6 @@ import {
   PromptInputBody,
   PromptInputFooter,
   PromptInputMessage,
-  PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
@@ -233,7 +232,10 @@ const ChatBot = () => {
               ref={inputWrapperRef}
               className="relative w-full"
             >
-              <PromptInput onSubmit={handleSubmit} className="w-full border-white/10 bg-secondary/30">
+              <PromptInput 
+                onSubmit={handleSubmit} 
+                className="w-full border-white/10 bg-secondary/30 transition-all duration-200 focus-within:border-white/25 focus-within:bg-secondary/40 focus-within:ring-1 focus-within:ring-white/10"
+              >
                 <PromptInputBody>
                   <PromptInputTextarea
                     placeholder="Pick a suggestion or ask anything about me..."
@@ -245,12 +247,17 @@ const ChatBot = () => {
                 </PromptInputBody>
                 <PromptInputFooter className="justify-end">
                   <PromptInputTools>
-                    <PromptInputSubmit
-                      status={status}
-                      onStop={stop}
-                      size="sm"
-                      className="rounded-xl bg-secondary px-3 text-secondary-foreground hover:bg-secondary/80"
-                    />
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-colors hover:bg-secondary/80 disabled:opacity-50"
+                    >
+                      {isLoading ? (
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent" />
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
+                    </button>
                   </PromptInputTools>
                 </PromptInputFooter>
               </PromptInput>
