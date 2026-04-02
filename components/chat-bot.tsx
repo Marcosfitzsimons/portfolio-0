@@ -111,7 +111,7 @@ const ChatBot = () => {
         {!isExpanded && (
           <div
             onClick={handleExpand}
-            className="flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-white/5 rounded-2xl"
+            className="flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors hover:bg-white/5 rounded-2xl"
           >
             <input
               type="text"
@@ -121,7 +121,7 @@ const ChatBot = () => {
             />
             <button
               type="button"
-              className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-colors hover:bg-primary/90"
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-colors hover:bg-secondary/80"
             >
               <Send className="h-4 w-4" />
             </button>
@@ -249,7 +249,7 @@ const ChatBot = () => {
                       status={status}
                       onStop={stop}
                       size="sm"
-                      className="rounded-xl bg-primary px-3 text-primary-foreground hover:bg-primary/90"
+                      className="rounded-xl bg-secondary px-3 text-secondary-foreground hover:bg-secondary/80"
                     />
                   </PromptInputTools>
                 </PromptInputFooter>
