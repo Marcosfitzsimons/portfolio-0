@@ -16,6 +16,8 @@ import {
 import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
 import Image from "next/image";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const SUGGESTIONS = [
   "What technologies do you use?",
@@ -187,12 +189,19 @@ const ChatBot = () => {
                             : "ml-6 rounded-tl-[3px] border-secondary/50 bg-secondary/40"
                         )}
                       >
-                        <p className={cn(
-                          "rounded-none px-4 py-2 text-xs md:text-sm",
-                          isUser ? "text-white" : "text-muted-foreground"
-                        )}>
-                          {content}
-                        </p>
+                        {isUser ? (
+                          <p className={cn(
+                            "rounded-none px-4 py-2 text-xs md:text-sm text-white"
+                          )}>
+                            {content}
+                          </p>
+                        ) : (
+                          <div className="chat-markdown rounded-none px-4 py-2 text-xs md:text-sm text-muted-foreground">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                              {content}
+                            </ReactMarkdown>
+                          </div>
+                        )}
                       </ScrollArea>
                     </div>
                   );
@@ -232,8 +241,8 @@ const ChatBot = () => {
               ref={inputWrapperRef}
               className="relative w-full"
             >
-              <PromptInput 
-                onSubmit={handleSubmit} 
+              <PromptInput
+                onSubmit={handleSubmit}
                 className="w-full border-white/10 bg-secondary/30 transition-all duration-200 focus-within:border-white/25 focus-within:bg-secondary/40 focus-within:ring-1 focus-within:ring-white/10"
               >
                 <PromptInputBody>
