@@ -242,7 +242,7 @@ const ChatBot = () => {
                     disabled={isLoading}
                     maxLength={160}
                     minLength={3}
-                    className="text-xs text-white placeholder:text-muted-foreground md:text-sm"
+                    className="text-xs text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm"
                   />
                 </PromptInputBody>
                 <PromptInputFooter className="justify-end">
