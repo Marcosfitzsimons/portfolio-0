@@ -794,12 +794,12 @@ export const PromptInput = ({
         type="file"
       />
       <form
-        className={cn("w-full", className)}
+        className="w-full"
         onSubmit={handleSubmit}
         ref={formRef}
         {...props}
       >
-        <InputGroup className="!h-auto flex-col overflow-hidden">
+        <InputGroup className={cn("!h-auto flex-col overflow-hidden", className)}>
           {children}
         </InputGroup>
       </form>

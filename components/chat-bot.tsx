@@ -3,14 +3,13 @@
 import React from "react";
 import { useChat } from "@ai-sdk/react";
 import { ScrollArea } from "./ui/scroll-area";
-import { User } from "lucide-react";
+import { User, ChevronDown, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   PromptInput,
   PromptInputBody,
   PromptInputFooter,
   PromptInputMessage,
-  PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
@@ -32,6 +31,7 @@ const SUGGESTIONS = [
 const ChatBot = () => {
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
   const inputWrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   const { messages, status, sendMessage, stop } = useChat({
     onError: () => {
@@ -45,6 +45,13 @@ const ChatBot = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Auto-expand when there are messages
+  React.useEffect(() => {
+    if (messages.length > 0) {
+      setIsExpanded(true);
+    }
+  }, [messages.length]);
+
   const handleSubmit = ({ text }: PromptInputMessage) => {
     if (!text.trim() || isLoading) return;
     sendMessage({
@@ -55,11 +62,28 @@ const ChatBot = () => {
 
   const handleSuggestion = (suggestion: string) => {
     if (isLoading) return;
+    setIsExpanded(true);
     const textarea = inputWrapperRef.current?.querySelector("textarea");
     if (!textarea) return;
     textarea.value = suggestion;
     textarea.dispatchEvent(new Event("input", { bubbles: true }));
     textarea.focus();
+  };
+
+  const handleExpand = () => {
+    if (!isExpanded) {
+      setIsExpanded(true);
+      // Focus the textarea after expansion
+      setTimeout(() => {
+        const textarea = inputWrapperRef.current?.querySelector("textarea");
+        textarea?.focus();
+      }, 100);
+    }
+  };
+
+  const handleCollapse = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsExpanded(false);
   };
 
   // Helper to extract text content from message parts
