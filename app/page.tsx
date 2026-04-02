@@ -1,7 +1,6 @@
 import ChatBot from "@/components/chat-bot";
 import PrimaryButton from "@/components/primary-button";
 import SecondaryButton from "@/components/secondary-button";
-import SocialLinks from "@/components/social-links";
 import { sora } from "@/components/fonts";
 import { User } from "lucide-react";
 import AnimatedContent from "@/components/AnimatedContent";
@@ -19,11 +18,7 @@ export default function Home() {
           </h2>
         </AnimatedContent>
 
-        <AnimatedContent direction="vertical" delay={0.15}>
-          <SocialLinks />
-        </AnimatedContent>
-
-        <AnimatedContent direction="vertical" delay={0.3} className="flex items-center gap-3 py-10">
+        <AnimatedContent direction="vertical" delay={0.15} className="flex items-center gap-3 py-10">
           <PrimaryButton />
           <SecondaryButton
             href="/about"
