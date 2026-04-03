@@ -28,38 +28,44 @@ const SUGGESTIONS = [
   {
     text: "What technologies do you use?",
     icon: "💻",
+    gradientColor: "rgba(96,165,250,0.25)",
     className:
-      "border-blue-400/15 bg-blue-400/10 text-blue-200/90 hover:bg-blue-400/15 hover:text-blue-100",
+      "bg-blue-400/10 text-blue-200/90 hover:bg-blue-400/15 hover:text-blue-100",
   },
   {
     text: "What's your experience level?",
     icon: "📊",
+    gradientColor: "rgba(52,211,153,0.25)",
     className:
-      "border-emerald-400/15 bg-emerald-400/10 text-emerald-200/90 hover:bg-emerald-400/15 hover:text-emerald-100",
+      "bg-emerald-400/10 text-emerald-200/90 hover:bg-emerald-400/15 hover:text-emerald-100",
   },
   {
     text: "Are you open to new opportunities?",
     icon: "🚀",
+    gradientColor: "rgba(167,139,250,0.25)",
     className:
-      "border-violet-400/15 bg-violet-400/10 text-violet-200/90 hover:bg-violet-400/15 hover:text-violet-100",
+      "bg-violet-400/10 text-violet-200/90 hover:bg-violet-400/15 hover:text-violet-100",
   },
   {
     text: "Do you work remotely?",
     icon: "🌍",
+    gradientColor: "rgba(251,191,36,0.25)",
     className:
-      "border-amber-400/15 bg-amber-400/10 text-amber-200/90 hover:bg-amber-400/15 hover:text-amber-100",
+      "bg-amber-400/10 text-amber-200/90 hover:bg-amber-400/15 hover:text-amber-100",
   },
   {
     text: "What projects have you built?",
     icon: "🛠️",
+    gradientColor: "rgba(251,113,133,0.25)",
     className:
-      "border-rose-400/15 bg-rose-400/10 text-rose-200/90 hover:bg-rose-400/15 hover:text-rose-100",
+      "bg-rose-400/10 text-rose-200/90 hover:bg-rose-400/15 hover:text-rose-100",
   },
   {
     text: "What's your availability to start?",
     icon: "📅",
+    gradientColor: "rgba(34,211,238,0.25)",
     className:
-      "border-cyan-400/15 bg-cyan-400/10 text-cyan-200/90 hover:bg-cyan-400/15 hover:text-cyan-100",
+      "bg-cyan-400/10 text-cyan-200/90 hover:bg-cyan-400/15 hover:text-cyan-100",
   },
 ];
 
@@ -269,6 +275,7 @@ const ChatBot = () => {
                     <Suggestion
                       suggestion={s.text}
                       icon={s.icon}
+                      gradientColor={s.gradientColor}
                       onClick={handleSuggestion}
                       disabled={isLoading}
                       className={s.className}
