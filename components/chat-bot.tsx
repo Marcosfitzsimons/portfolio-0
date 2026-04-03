@@ -13,19 +13,54 @@ import {
   PromptInputTextarea,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
-import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
+import { Suggestion } from "@/components/ai-elements/suggestion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 import Image from "next/image";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 const SUGGESTIONS = [
-  "What technologies do you use?",
-  "What's your experience level?",
-  "Are you open to new opportunities?",
-  "Do you work remotely?",
-  "What projects have you built?",
-  "What's your availability to start?",
+  {
+    text: "What technologies do you use?",
+    icon: "💻",
+    className:
+      "border-blue-400/15 bg-blue-400/10 text-blue-200/90 hover:bg-blue-400/15 hover:text-blue-100",
+  },
+  {
+    text: "What's your experience level?",
+    icon: "📊",
+    className:
+      "border-emerald-400/15 bg-emerald-400/10 text-emerald-200/90 hover:bg-emerald-400/15 hover:text-emerald-100",
+  },
+  {
+    text: "Are you open to new opportunities?",
+    icon: "🚀",
+    className:
+      "border-violet-400/15 bg-violet-400/10 text-violet-200/90 hover:bg-violet-400/15 hover:text-violet-100",
+  },
+  {
+    text: "Do you work remotely?",
+    icon: "🌍",
+    className:
+      "border-amber-400/15 bg-amber-400/10 text-amber-200/90 hover:bg-amber-400/15 hover:text-amber-100",
+  },
+  {
+    text: "What projects have you built?",
+    icon: "🛠️",
+    className:
+      "border-rose-400/15 bg-rose-400/10 text-rose-200/90 hover:bg-rose-400/15 hover:text-rose-100",
+  },
+  {
+    text: "What's your availability to start?",
+    icon: "📅",
+    className:
+      "border-cyan-400/15 bg-cyan-400/10 text-cyan-200/90 hover:bg-cyan-400/15 hover:text-cyan-100",
+  },
 ];
 
 const ChatBot = () => {
@@ -224,17 +259,24 @@ const ChatBot = () => {
             </div>
 
             {/* Suggestions */}
-            <Suggestions>
-              {SUGGESTIONS.map((s) => (
-                <Suggestion
-                  key={s}
-                  suggestion={s}
-                  onClick={handleSuggestion}
-                  disabled={isLoading}
-                  className="border-white/10 bg-secondary/50 text-white hover:bg-secondary hover:text-white"
-                />
-              ))}
-            </Suggestions>
+            <Carousel
+              opts={{ align: "start", dragFree: true }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2">
+                {SUGGESTIONS.map((s) => (
+                  <CarouselItem key={s.text} className="basis-auto pl-2">
+                    <Suggestion
+                      suggestion={s.text}
+                      icon={s.icon}
+                      onClick={handleSuggestion}
+                      disabled={isLoading}
+                      className={s.className}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
 
             {/* Input Area */}
             <div
