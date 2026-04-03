@@ -5,7 +5,7 @@ import { GeistSans } from "geist/font";
 import "./globals.css";
 import Header from "@/components/header";
 import Nav from "@/components/nav";
-import SocialLinks from "@/components/social-links";
+import Footer from "@/components/footer";
 // import Blob from "@/components/blob";
 
 // const GeometricBackground = dynamic(
@@ -36,13 +36,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <Header />
         <Nav />
         <div className="w-full">{props.children}</div>
-        <div className="fixed bottom-2 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-5">
-          <SocialLinks />
-          <span className="group text-xs text-muted-foreground transition-colors hover:text-white">
-            Made w. <span className="group-hover:animate-pulse">🤍</span> by
-            Marcos Fitzsimons
-          </span>
-        </div>
+        <Footer />
         {/* <Blob /> */}
         {/* <GeometricBackground /> */}
         <div
