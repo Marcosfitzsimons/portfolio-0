@@ -20,9 +20,26 @@ export interface Project {
 // Status badges
 export const statusConfig: Record<
   ProjectStatus,
-  { label: string; variant: "default" | "secondary" | "outline" }
+  {
+    label: string;
+    variant: "default" | "secondary" | "outline";
+    badgeClass: string;
+  }
 > = {
-  live: { label: "Live", variant: "default" },
-  "in-progress": { label: "In Progress", variant: "secondary" },
-  archived: { label: "Archived", variant: "outline" },
+  live: {
+    label: "Live",
+    variant: "default",
+    badgeClass:
+      "border-emerald-500/30 bg-emerald-500/20 text-emerald-300 backdrop-blur-sm",
+  },
+  "in-progress": {
+    label: "In Progress",
+    variant: "secondary",
+    badgeClass: "bg-background/80 backdrop-blur-sm",
+  },
+  archived: {
+    label: "Archived",
+    variant: "outline",
+    badgeClass: "bg-background/80 backdrop-blur-sm",
+  },
 };

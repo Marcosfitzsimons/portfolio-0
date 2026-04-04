@@ -85,8 +85,19 @@ Key responsibilities and achievements:
 - Spearheaded the design and delivery of multiple full-stack products across web and mobile platforms, leveraging Node.js, React/TypeScript, and React Native. Delivered secure authentication, scalable infrastructures, and automation features that streamlined operations across diverse business domains.
 - Directed the development of an AI-driven hotel booking platform, leading a cross-functional team to integrate machine learning, automate client Q&A and reservation processing, and containerize services with Docker to ensure efficiency and reliability.
 - Architected and maintained a robust AWS environment with Terraform, establishing three-tier (dev/stage/prod) infrastructure and CI/CD pipelines that accelerated releases, strengthened scalability, and improved overall system stability.
+- All Rocking Product projects are multi-tenant architectures, supporting multiple clients/organizations from a single codebase.
 
-**Technologies used:** Node.js, React.js, TypeScript, React Native, Docker, AWS, Terraform, CI/CD
+**Technologies used:** Node.js, React.js, TypeScript, React Native, Docker, AWS, Terraform, CI/CD, PostgreSQL
+
+#### Projects at Rocking Product
+
+- **Grab & Eat** (2024 - 2025) — An autonomous grocery store platform (web + mobile). Clients download the app and purchase items without human assistance at checkout. Built with React Native for mobile, React for the web dashboard, Node.js backend, and PostgreSQL. Multi-tenant architecture supporting multiple store locations.
+
+- **KeySwap** (2024 - 2025) — A web application for mastering symmetrical inversion in piano, a powerful technique for developing balanced piano skills. Built with React, Node.js, and PostgreSQL. Multi-tenant platform serving multiple music education providers.
+
+- **Claimence** (2025 - 2026) — An AI-powered coverage analysis tool tailored for Financial Lines Claims Professionals. Streamlines claim decisions from months to minutes using AI-driven analysis. Built with React, Node.js, PostgreSQL, and deployed on AWS infrastructure managed with Terraform. Multi-tenant architecture for multiple insurance organizations.
+
+- **Brixa** (2025 - 2026) — A hotel management system featuring an AI assistant that answers every guest question with professional, secure language that builds trust. Ensures consistent guest experiences even with new team members. Built with React, Node.js, and PostgreSQL. Multi-tenant platform supporting multiple hotel properties.
 
 ### Full-Stack Developer at Fabebus
 
@@ -128,3 +139,9 @@ A comprehensive travel booking application designed and developed as a freelance
 **Website:** https://www.fabebuscda.com.ar/
 
 **Tech Stack:** Node.js, Express.js, MongoDB, React.js, TypeScript, Shadcn UI, Mercado Pago API
+
+### Cash Tally
+
+A Next.js application built to track daily cash tally for a grocery store. A personal project made for my father's business to simplify end-of-day cash reconciliation.
+
+**Tech Stack:** Next.js, PostgreSQL
