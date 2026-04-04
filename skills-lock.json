@@ -16,6 +16,11 @@
       "sourceType": "github",
       "computedHash": "22a8401fab0cdf32d5c153b98aba5e95435a479810896879535dc7ac3710efbe"
     },
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "computedHash": "daf64ca15f4fa081a6747766db538e2dbd1131725ed4fcdd3d538dc62c7035ba"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",

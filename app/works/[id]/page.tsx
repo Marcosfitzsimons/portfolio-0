@@ -3,6 +3,7 @@ import { ChevronRight, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
+import { getProjectGradient } from "@/lib/project-gradients";
 
 // Development:
 
@@ -48,14 +49,25 @@ export default async function SingleWorkPage({
 
   return (
     <section className="flex flex-col items-center gap-5 pb-10 pt-5 sm:mx-auto sm:w-[80%]">
-      <Image
-        src={project.coverImage}
-        alt="Project cover image"
-        sizes="100vw"
-        className="h-auto w-full rounded-2xl"
-        width={500}
-        height={300}
-      />
+      {project.coverImage ? (
+        <Image
+          src={project.coverImage}
+          alt="Project cover image"
+          sizes="100vw"
+          className="h-auto w-full rounded-2xl"
+          width={500}
+          height={300}
+        />
+      ) : (
+        <div
+          className="flex aspect-video w-full items-center justify-center rounded-2xl"
+          style={{ background: getProjectGradient(project.title) }}
+        >
+          <span className="text-4xl font-bold text-white/20">
+            {project.title}
+          </span>
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center gap-1 self-start">
         <Link href="/works" className="font-light">
@@ -71,17 +83,19 @@ export default async function SingleWorkPage({
         {project.description}
       </p>
       <div className="flex w-full flex-col gap-1 text-sm">
-        <div className="flex flex-col">
-          <p className="text-white">Website</p>
-          <Link
-            href={project.siteUrl}
-            className="flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-300"
-            target="_blank"
-          >
-            {project.siteUrl}
-            <ExternalLink className="h-4 w-4" />
-          </Link>
-        </div>
+        {project.siteUrl && (
+          <div className="flex flex-col">
+            <p className="text-white">Website</p>
+            <Link
+              href={project.siteUrl}
+              className="flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-300"
+              target="_blank"
+            >
+              {project.siteUrl}
+              <ExternalLink className="h-4 w-4" />
+            </Link>
+          </div>
+        )}
         <div className="flex flex-col">
           <p className="text-white">Stack</p>
           <p className="font-light">{project.stack}</p>

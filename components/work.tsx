@@ -7,6 +7,7 @@ import {
   statusConfig,
 } from "@/lib/project-types";
 import { Calendar } from "lucide-react";
+import { getProjectGradient } from "@/lib/project-gradients";
 
 const Work = ({ ...project }: Project) => {
   const displayTags = project.tags?.slice(0, 3) || [];
@@ -25,19 +26,30 @@ const Work = ({ ...project }: Project) => {
     <article className="group w-full max-w-sm">
       <Link href={`/works/${project.id}`} className="flex flex-col gap-3">
         <div className="relative overflow-hidden rounded-2xl">
-          <Image
-            alt={project.title}
-            src={project.coverImageSm || "/placeholder.svg"}
-            width={450}
-            height={350}
-            sizes="100vw"
-            className="h-[13rem] w-full object-cover transition-transform duration-300 group-hover:scale-105 sm:h-[10rem]"
-          />
+          {project.coverImageSm ? (
+            <Image
+              alt={project.title}
+              src={project.coverImageSm}
+              width={450}
+              height={350}
+              sizes="100vw"
+              className="h-[13rem] w-full object-cover transition-transform duration-300 group-hover:scale-105 sm:h-[10rem]"
+            />
+          ) : (
+            <div
+              className="flex h-[13rem] w-full items-center justify-center transition-transform duration-300 group-hover:scale-105 sm:h-[10rem]"
+              style={{ background: getProjectGradient(project.title) }}
+            >
+              <span className="text-2xl font-bold text-white/20">
+                {project.title}
+              </span>
+            </div>
+          )}
           {statusConfigEntry && (
             <div className="absolute right-3 top-3">
               <Badge
                 variant={statusConfigEntry.variant}
-                className="bg-background/80 backdrop-blur-sm"
+                className={statusConfigEntry.badgeClass}
               >
                 {statusConfigEntry.label}
               </Badge>
