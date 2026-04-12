@@ -27,7 +27,15 @@ export default async function SingleWorkPage({
 }: {
   params: { id: string };
 }) {
-  const project: Project | null = await getSingleProject(params.id);
+  const raw = await getSingleProject(params.id);
+  const project: Project | null = raw
+    ? {
+        ...raw,
+        status: (raw.status as Project["status"]) ?? undefined,
+        year: raw.year ?? undefined,
+        tags: raw.tags ?? undefined,
+      }
+    : null;
 
   if (project === null) {
     // Handle the case where data is null, such as showing an error message
