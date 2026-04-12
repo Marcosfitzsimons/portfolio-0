@@ -25,7 +25,7 @@ I speak Spanish (native) and English (professional proficiency).
 - React Native - Cross-platform mobile development
 - CSS - Styling and layouts
 - Tailwind CSS - Utility-first CSS framework
-- Framer Motion - Animation library for React
+- Motion - Animation library for React (formerly Framer Motion)
 
 ### Backend Development
 
@@ -42,16 +42,20 @@ I speak Spanish (native) and English (professional proficiency).
 - AWS - Cloud infrastructure and services
 - Docker - Containerization and deployment
 - Terraform - Infrastructure as code
+- Digital Ocean - Cloud hosting and deployment platform
 
 ### AI & Automation
 
-- AI workflows - Integrating machine learning and AI-driven features into applications
+- OpenAI API - Integrating GPT models and AI-driven features into applications
+- LangChain - AI orchestration framework for building agentic and LLM-powered workflows
+- Vercel AI SDK - AI primitives for building streaming AI applications in Next.js
 
 ### Tools & Technologies
 
 - Prisma ORM - Database toolkit and ORM
+- TypeORM - ORM for TypeScript and Node.js
 - GitHub - Version control and collaboration
-- Shadcn UI - Component library built on Radix UI
+- shadcn/ui - Component library built on Radix UI
 - CI/CD pipelines - Automated deployment workflows
 
 ### Soft Skills
