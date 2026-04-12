@@ -35,4 +35,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.claude/settings.local.jsonupdate-works-experience.md
+# claude
+.claude/settings.json
+.claude/settings.local.json

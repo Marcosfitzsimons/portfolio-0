@@ -35,7 +35,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       >
         <Header />
         <Nav />
-        <div className="w-full">{props.children}</div>
+        <div className="w-full pb-24">{props.children}</div>
         <Footer />
         {/* <Blob /> */}
         {/* <GeometricBackground /> */}

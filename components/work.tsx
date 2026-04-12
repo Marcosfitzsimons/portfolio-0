@@ -6,11 +6,16 @@ import {
   type ProjectStatus,
   statusConfig,
 } from "@/lib/project-types";
+import { skillTagMap } from "@/lib/skills-source";
 import { Calendar } from "lucide-react";
 import { getProjectGradient } from "@/lib/project-gradients";
 
 const Work = ({ ...project }: Project) => {
-  const displayTags = project.tags?.slice(0, 3) || [];
+  const displayTags = [...(project.tags?.slice(0, 3) || [])].sort((a, b) => {
+    const aOrder = skillTagMap.get(a)?.groupOrder ?? Infinity;
+    const bOrder = skillTagMap.get(b)?.groupOrder ?? Infinity;
+    return aOrder - bOrder;
+  });
   const isValidStatus = (
     status: string | undefined | null,
   ): status is ProjectStatus => {
@@ -78,7 +83,7 @@ const Work = ({ ...project }: Project) => {
           {displayTags.length > 0 && (
             <div className="mt-1 flex flex-wrap gap-1.5">
               {displayTags.map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs">
+                <Badge key={tag} className="text-xs bg-white/5 text-white/60 border border-white/10 hover:bg-white/5">
                   {tag}
                 </Badge>
               ))}

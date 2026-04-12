@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 import { getProjectGradient } from "@/lib/project-gradients";
+import { Badge } from "@/components/ui/badge";
+import { skillTagMap } from "@/lib/skills-source";
+import type { Project } from "@/lib/project-types";
 
 // Development:
 
@@ -24,19 +27,7 @@ export default async function SingleWorkPage({
 }: {
   params: { id: string };
 }) {
-  const project: {
-    id: number;
-    title: string;
-    description: string;
-    stack: string;
-    siteUrl: string;
-    coverImageSm: string;
-    coverImage: string;
-    images: string[];
-    mobileImages: string[];
-    isPersonal: boolean;
-    date: string;
-  } | null = await getSingleProject(params.id);
+  const project: Project | null = await getSingleProject(params.id);
 
   if (project === null) {
     // Handle the case where data is null, such as showing an error message
@@ -82,6 +73,21 @@ export default async function SingleWorkPage({
       <p className="w-full indent-3 text-sm text-muted-foreground sm:indent-5">
         {project.description}
       </p>
+      {project.tags && project.tags.length > 0 && (
+        <div className="flex w-full flex-wrap gap-1.5">
+          {[...project.tags]
+            .sort((a, b) => {
+              const aOrder = skillTagMap.get(a)?.groupOrder ?? Infinity;
+              const bOrder = skillTagMap.get(b)?.groupOrder ?? Infinity;
+              return aOrder - bOrder;
+            })
+            .map((tag) => (
+              <Badge key={tag} className="text-xs bg-white/5 text-white/60 border border-white/10 hover:bg-white/5">
+                {tag}
+              </Badge>
+            ))}
+        </div>
+      )}
       <div className="flex w-full flex-col gap-1 text-sm">
         {project.siteUrl && (
           <div className="flex flex-col">
