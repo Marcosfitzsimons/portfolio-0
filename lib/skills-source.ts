@@ -89,7 +89,8 @@ export const skillGroups: SkillGroup[] = [
   {
     category: "Backend",
     emoji: "⚙️",
-    labelClass: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+    labelClass:
+      "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
     skills: [
       {
         name: "Node.js",
@@ -114,7 +115,7 @@ export const skillGroups: SkillGroup[] = [
       },
       {
         name: "TypeORM",
-        src: "/typeorm.svg",
+        src: "/typeorm.png",
         alt: "TypeORM logo",
         width: 24,
         height: 24,
@@ -158,15 +159,15 @@ export const skillGroups: SkillGroup[] = [
         name: "LangChain",
         src: "/langchain.svg",
         alt: "LangChain logo",
-        width: 24,
-        height: 24,
+        width: 32,
+        height: 32,
       },
       {
         name: "Vercel AI SDK",
-        src: "/vercel-ai.svg",
+        src: "/ai-sdk.svg",
         alt: "Vercel AI SDK logo",
-        width: 24,
-        height: 24,
+        width: 38,
+        height: 38,
       },
     ],
   },
@@ -177,7 +178,7 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       {
         name: "AWS",
-        src: "/aws.svg",
+        src: "/aws.png",
         alt: "AWS logo",
         width: 40,
         height: 24,
@@ -198,7 +199,7 @@ export const skillGroups: SkillGroup[] = [
       },
       {
         name: "Digital Ocean",
-        src: "/digitalocean.svg",
+        src: "/digital-ocean.svg",
         alt: "Digital Ocean logo",
         width: 24,
         height: 24,
@@ -206,3 +207,15 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
 ];
+
+export const skillTagMap = new Map<
+  string,
+  { labelClass: string; groupOrder: number }
+>(
+  skillGroups.flatMap((group, i) =>
+    group.skills.map((skill) => [
+      skill.name,
+      { labelClass: group.labelClass, groupOrder: i },
+    ]),
+  ),
+);

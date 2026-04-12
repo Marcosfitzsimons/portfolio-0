@@ -30,7 +30,7 @@ export const statusConfig: Record<
     label: "Live",
     variant: "default",
     badgeClass:
-      "border-emerald-500/30 bg-emerald-500/20 text-emerald-300 backdrop-blur-sm",
+      "border-emerald-500/30 bg-emerald-500/20 text-emerald-300 backdrop-blur-sm hover:bg-emerald-500/20",
   },
   "in-progress": {
     label: "In Progress",

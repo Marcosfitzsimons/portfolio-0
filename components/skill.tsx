@@ -20,7 +20,7 @@ const Skill = ({ ...skill }: SkillType) => {
         </div>
       </div>
       <div
-        className={`absolute -bottom-2 translate-y-full whitespace-nowrap text-xs font-normal text-muted-foreground opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:text-white group-hover:opacity-100${skill.badge ? " -bottom-3" : ""}`}
+        className={`absolute -bottom-2 translate-y-full whitespace-nowrap text-xs font-medium text-muted-foreground opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:text-white group-hover:opacity-100${skill.badge ? " -bottom-3" : ""}`}
       >
         {skill.name}
       </div>
