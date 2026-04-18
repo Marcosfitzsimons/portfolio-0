@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Drawer,
+  DrawerHeader,
   DrawerContent,
+  DrawerFooter,
   DrawerClose,
   DrawerTitle,
   DrawerDescription,
@@ -246,7 +248,7 @@ const ChatBot = () => {
             disabled={isLoading}
             maxLength={160}
             minLength={3}
-            className="text-xs text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm"
+            className="text-base text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm"
           />
         </PromptInputBody>
         <PromptInputFooter className="justify-end">
@@ -340,7 +342,7 @@ const ChatBot = () => {
                 </ScrollArea>
               </div>
 
-              <div className="flex flex-col gap-3 border-t border-white/10 p-4">
+              <div className="flex shrink-0 flex-col gap-3 border-t border-white/10 p-4">
                 {suggestionsCarousel}
                 {inputArea}
               </div>
@@ -355,9 +357,9 @@ const ChatBot = () => {
         >
           <DrawerContent
             onPointerDownOutside={(e) => e.preventDefault()}
-            className="flex h-[90vh] flex-col border-white/10 bg-background/95 backdrop-blur-md"
+            className="flex h-[90dvh] max-h-[90dvh] flex-col overflow-hidden border-white/10 bg-background/95 backdrop-blur-md"
           >
-            <div className="mt-2 flex flex-row items-center justify-between border-b border-white/10 px-4 py-3">
+            <DrawerHeader className="mt-2 flex shrink-0 flex-row items-center justify-between border-b border-white/10 px-4 py-3 text-left">
               <div className="flex items-center gap-1.5 text-sm text-white">
                 <Image
                   src={AI_AVATAR_SRC}
@@ -378,7 +380,7 @@ const ChatBot = () => {
               >
                 <X className="h-4 w-4" />
               </DrawerClose>
-            </div>
+            </DrawerHeader>
 
             <div className="flex min-h-0 flex-1 flex-col px-4 pt-3">
               <ScrollArea className="h-full w-full pr-2">
@@ -386,10 +388,10 @@ const ChatBot = () => {
               </ScrollArea>
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-white/10 p-4">
+            <DrawerFooter className="shrink-0 gap-3 border-t border-white/10 p-4 pt-4">
               {suggestionsCarousel}
               {inputArea}
-            </div>
+            </DrawerFooter>
           </DrawerContent>
         </Drawer>
       )}

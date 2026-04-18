@@ -31,12 +31,14 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${GeistSans.className} relative mx-auto flex w-[min(95%,750px)] flex-col items-center justify-center overflow-x-hidden antialiased`}
+        className={`${GeistSans.className} relative min-h-screen overflow-x-hidden antialiased`}
       >
-        <Header />
-        <Nav />
-        <div className="w-full pb-24">{props.children}</div>
-        <Footer />
+        <div className="relative mx-auto flex w-[min(95%,750px)] flex-col items-center justify-center">
+          <Header />
+          <Nav />
+          <div className="w-full pb-24">{props.children}</div>
+          <Footer />
+        </div>
         {/* <Blob /> */}
         {/* <GeometricBackground /> */}
         <div
