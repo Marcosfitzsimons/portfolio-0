@@ -89,6 +89,14 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* The <body> is the centered layout container (mx-auto w-[min(95%,750px)]).
+     Radix's scroll-lock sets margin-left:0 and margin-right:15px on body,
+     which destroys mx-auto and pushes the page to the left edge. Restore
+     auto margins while the lock is active so the layout stays centered. */
+  html body[data-scroll-locked] {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
 
 .chat-markdown p { margin: 0.25em 0; }

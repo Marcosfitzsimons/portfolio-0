@@ -45,6 +45,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.167.1",
+    "vaul": "^1.1.2",
     "zod": "^3.22.4"
   },
   "prisma": {
