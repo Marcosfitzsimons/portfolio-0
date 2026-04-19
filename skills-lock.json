@@ -21,6 +21,11 @@
       "sourceType": "github",
       "computedHash": "daf64ca15f4fa081a6747766db538e2dbd1131725ed4fcdd3d538dc62c7035ba"
     },
+    "pr-writer": {
+      "source": "getsentry/skills",
+      "sourceType": "github",
+      "computedHash": "f5c35b0ebd8942bf22474066032f3ca1232f8bc9100addae26208c6bb03fc2e3"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",
