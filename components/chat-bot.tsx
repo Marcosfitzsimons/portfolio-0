@@ -301,7 +301,6 @@ const ChatBot = () => {
           <DialogPrimitive.Portal>
             <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
             <DialogPrimitive.Content
-              onPointerDownOutside={(e) => e.preventDefault()}
               className={cn(
                 "fixed left-1/2 top-1/2 z-50 flex -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden",
                 "h-[85vh] w-[min(90vw,900px)] rounded-2xl",
@@ -356,7 +355,6 @@ const ChatBot = () => {
           shouldScaleBackground={false}
         >
           <DrawerContent
-            onPointerDownOutside={(e) => e.preventDefault()}
             className="flex h-[90dvh] max-h-[90dvh] flex-col overflow-hidden border-white/10 bg-background/95 backdrop-blur-md"
           >
             <DrawerHeader className="mt-2 flex shrink-0 flex-row items-center justify-between border-b border-white/10 px-4 py-3 text-left">
