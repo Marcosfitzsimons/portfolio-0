@@ -7,6 +7,9 @@ import { usePathname } from "next/navigation";
 
 const Nav = () => {
   const pathname = usePathname();
+
+  if (pathname?.startsWith("/prototype")) return null;
+
   return (
     <div className="flex w-[min(95%,650px)] items-center justify-center py-4">
       <div className="relative transition-colors after:pointer-events-none after:absolute after:inset-px after:rounded-full after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">

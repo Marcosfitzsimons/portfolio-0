@@ -352,7 +352,7 @@ const ChatBot = () => {
   );
 
   return (
-    <div className="relative mx-auto w-[min(95%,650px)] after:pointer-events-none after:absolute after:inset-px after:rounded-2xl after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
+    <div className="relative w-full after:pointer-events-none after:absolute after:inset-px after:rounded-2xl after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
       <section className="flex flex-col rounded-2xl border border-white/10 bg-background/60 p-0 backdrop-blur-md transition-all duration-300 ease-out">
         <div
           role="button"
@@ -366,11 +366,11 @@ const ChatBot = () => {
             readOnly
             tabIndex={-1}
             placeholder="Ask me anything..."
-            className="flex-1 cursor-pointer bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground outline-none"
+            className="min-w-0 flex-1 cursor-pointer bg-transparent text-sm text-muted-foreground placeholder:text-muted-foreground outline-none"
           />
           <span
             aria-hidden
-            className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-colors"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-colors"
           >
             <Send className="h-4 w-4" />
           </span>
