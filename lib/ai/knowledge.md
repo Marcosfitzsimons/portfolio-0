@@ -87,7 +87,7 @@ Since 2021, I've been self-taught through diverse platforms including:
 Key responsibilities and achievements:
 
 - Spearheaded the design and delivery of multiple full-stack products across web and mobile platforms, leveraging Node.js, React/TypeScript, and React Native. Delivered secure authentication, scalable infrastructures, and automation features that streamlined operations across diverse business domains.
-- Directed the development of an AI-driven hotel booking platform, leading a cross-functional team to integrate machine learning, automate client Q&A and reservation processing, and containerize services with Docker to ensure efficiency and reliability.
+- Directed the development of Brixa, a hotel management system with an AI assistant for guest Q&A and reservation-related workflows, and containerized services with Docker to ensure efficiency and reliability.
 - Architected and maintained a robust AWS environment with Terraform, establishing three-tier (dev/stage/prod) infrastructure and CI/CD pipelines that accelerated releases, strengthened scalability, and improved overall system stability.
 - All Rocking Product projects are multi-tenant architectures, supporting multiple clients/organizations from a single codebase.
 

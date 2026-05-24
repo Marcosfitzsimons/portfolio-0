@@ -1,6 +1,15 @@
-import { streamText, type UIMessage } from "ai";
+import {
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  streamText,
+  type UIMessage,
+} from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { findRelevantContent } from "@/lib/ai/rag";
+import {
+  buildChatSystemPrompt,
+  getChatScopeDecision,
+} from "@/lib/ai/chat-policy";
 
 // Configure OpenAI with custom env var name
 const openai = createOpenAI({
@@ -36,6 +45,19 @@ function convertToMessages(messages: UIMessage[]): Message[] {
   }));
 }
 
+function createGuardrailResponse(message: string): Response {
+  const stream = createUIMessageStream({
+    execute: ({ writer }) => {
+      const id = "scope-guardrail";
+      writer.write({ type: "text-start", id });
+      writer.write({ type: "text-delta", id, delta: message });
+      writer.write({ type: "text-end", id });
+    },
+  });
+
+  return createUIMessageStreamResponse({ stream });
+}
+
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
 
@@ -48,6 +70,11 @@ export async function POST(req: Request) {
     return new Response("No query provided", { status: 400 });
   }
 
+  const scopeDecision = getChatScopeDecision(query);
+  if (!scopeDecision.allowed) {
+    return createGuardrailResponse(scopeDecision.message ?? "");
+  }
+
   // Find relevant context from knowledge base
   const relevantChunks = await findRelevantContent(query, 3);
   const context = relevantChunks.join("\n\n---\n\n");
@@ -57,21 +84,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: openai("gpt-4o-mini"),
-    system: `You are a helpful assistant that answers questions about Marcos Fitzsimons as if you were him speaking in first person.
-You are only qualified to answer questions related to Marcos Fitzsimons. For questions about other topics, politely explain that you can only answer questions about Marcos Fitzsimons.
-
-Use the following context to answer questions accurately:
-
-<context>
-${context}
-</context>
-
-Guidelines:
-- Be friendly and conversational
-- Answer in first person (I, my, me)
-- Keep responses concise but informative
-- If you don't have specific information in the context, say so honestly
-- You can elaborate on topics mentioned in the context with reasonable assumptions`,
+    system: buildChatSystemPrompt(context),
     messages: convertedMessages,
   });
 

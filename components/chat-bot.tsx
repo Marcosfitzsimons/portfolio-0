@@ -116,7 +116,7 @@ const SUGGESTIONS = [
 ];
 
 const ChatBot = () => {
-  const bottomRef = React.useRef<HTMLDivElement | null>(null);
+  const messagesScrollAreaRef = React.useRef<HTMLDivElement | null>(null);
   const inputWrapperRef = React.useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [showIntro, setShowIntro] = React.useState(false);
@@ -131,7 +131,14 @@ const ChatBot = () => {
   const isLoading = status === "streaming" || status === "submitted";
 
   React.useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const viewport = messagesScrollAreaRef.current?.querySelector<HTMLElement>(
+      "[data-radix-scroll-area-viewport]",
+    );
+
+    viewport?.scrollTo({
+      top: viewport.scrollHeight,
+      behavior: "smooth",
+    });
   }, [messages]);
 
   React.useEffect(() => {
@@ -268,7 +275,6 @@ const ChatBot = () => {
           />
         </div>
       )}
-      <div ref={bottomRef} />
     </>
   );
 
@@ -434,7 +440,10 @@ const ChatBot = () => {
                       variants={SHEET_CHILD_VARIANTS}
                       className="relative flex min-h-0 flex-1 flex-col px-4 pt-3"
                     >
-                      <ScrollArea className="h-full w-full pr-2">
+                      <ScrollArea
+                        ref={messagesScrollAreaRef}
+                        className="h-full w-full pr-2"
+                      >
                         {messagesList}
                       </ScrollArea>
                       {introCallout}
@@ -485,7 +494,10 @@ const ChatBot = () => {
             </DrawerHeader>
 
             <div className="relative flex min-h-0 flex-1 flex-col px-4 pt-3">
-              <ScrollArea className="h-full w-full pr-2">
+              <ScrollArea
+                ref={messagesScrollAreaRef}
+                className="h-full w-full pr-2"
+              >
                 {messagesList}
               </ScrollArea>
               {introCallout}
