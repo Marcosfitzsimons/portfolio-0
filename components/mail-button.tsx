@@ -30,7 +30,10 @@ const MailButton = () => {
       <Popover>
         <div className="relative transition-colors after:pointer-events-none after:absolute after:inset-px after:rounded-[15.5px] after:shadow-highlight after:shadow-gray-300/20 after:transition-colors focus-within:after:shadow-gray-300/50">
           <TooltipTrigger asChild>
-            <PopoverTrigger className="flex h-10 w-10 items-center justify-center rounded-2xl border bg-secondary/50 text-secondary-foreground backdrop-blur-sm transition-colors hover:bg-secondary/40 hover:text-white">
+            <PopoverTrigger
+              aria-label="Contact Marcos Fitzsimons by email"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border bg-secondary/50 text-secondary-foreground backdrop-blur-sm transition-colors hover:bg-secondary/40 hover:text-white"
+            >
               <Mail className="h-[18px] w-[18px] lg:h-5 lg:w-5" />
             </PopoverTrigger>
           </TooltipTrigger>

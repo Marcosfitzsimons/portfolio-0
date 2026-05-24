@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type React from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +12,7 @@ import {
   Bot,
   Briefcase,
   Calendar,
-  Code2,
+  FolderOpenDot,
   Layers3,
   Sparkles,
   UserRound,
@@ -21,6 +22,7 @@ import ChatBot from "@/components/chat-bot";
 import LogoLoop from "@/components/logo-loop";
 import ScrollStack, { ScrollStackItem } from "@/components/ScrollStack";
 import { ShinyIcon, SPARKLES_SVG } from "@/components/shiny-text";
+import SocialLinks from "@/components/social-links";
 import StarBorder from "@/components/star-border";
 import PrototypeVariantSwitcher, {
   type PrototypeVariant,
@@ -46,24 +48,44 @@ const variants: PrototypeVariant[] = [
   { key: "C", name: "Command Story" },
 ];
 
+const SoftAurora = dynamic(() => import("@/components/SoftAurora"), {
+  ssr: false,
+});
+
 const aboutCopy =
   "Full-stack developer building web and mobile products that integrate AI, scalable cloud infrastructure, and polished product interfaces. The work is practical, reliable, and designed for real teams.";
 
-const profileCopy =
-  "Full-Stack Developer with 4+ years of experience building and scaling web and mobile applications. I work across TypeScript, React, Node.js, React Native, AWS, Terraform, and AI workflows, turning complex product requirements into reliable, user-friendly systems.";
-
 const sidebarCopy =
-  "Building AI-powered web and mobile products from Argentina for teams worldwide.";
+  "TypeScript developer building web, mobile, cloud, and AI-powered systems for real teams.";
 
-const proofCards = [
-  ["4+", "Years"],
-  ["Web + Mobile", "Products"],
-  ["AI + Cloud", "Systems"],
-];
+const projectDeckCopy: Record<string, string> = {
+  "Travel Booking App":
+    "Booking flow and admin surface for a tourism business, built to keep trips, content, and customer details manageable.",
+  "Golfo Nuevo Admin":
+    "Internal product admin for a Qi men's shop. Practical tooling, less spreadsheet drift.",
+  KeySwap:
+    "A piano practice tool for symmetric inversion, shaped for sessions where speed and clarity matter.",
+  Claimence:
+    "Coverage analysis for financial-lines claims, narrowing policy noise into decisions people can act on.",
+  Brixa:
+    "Hotel ops assistant that answers guest questions with property context, so staff repeat themselves less.",
+  "Grab & Eat":
+    "Autonomous grocery checkout: scan, purchase, leave without turning the store into a queue.",
+  "Multi Step Form":
+    "A polished form flow with validation and motion, useful as a small pattern library for onboarding.",
+  "Feeling the Groove":
+    "Personal event tracker for nights out, notes, and memories after the music fades.",
+  "Rest Countries App":
+    "Country browser challenge sharpened around search, filters, routing, and API state.",
+};
 
 const sectionLinks = [
-  { label: "About", href: "#about", icon: <UserRound className="size-4" /> },
-  { label: "Work", href: "#work", icon: <Briefcase className="size-4" /> },
+  { label: "Ask", href: "#ask", icon: <Sparkles className="size-4" /> },
+  {
+    label: "Works",
+    href: "#works",
+    icon: <FolderOpenDot className="size-4" />,
+  },
   { label: "Skills", href: "#skills", icon: <Layers3 className="size-4" /> },
 ];
 
@@ -71,14 +93,19 @@ const prototypeQuestion =
   "Prototype question: can a calmer background make the portfolio feel premium while keeping the project story, chat assistant, and scroll motion readable?";
 
 const normalizeVariant = (value: string | null, fallback: string) =>
-  variants.some((variant) => variant.key === value) ? value ?? fallback : fallback;
+  variants.some((variant) => variant.key === value)
+    ? value ?? fallback
+    : fallback;
 
 const getProjectTags = (project: Project) => project.tags?.slice(0, 4) ?? [];
 
-const combineProjects = (workProjects: Project[], personalProjects: Project[]) => [
-  ...workProjects,
-  ...personalProjects,
-];
+const getProjectDeckCopy = (project: Project) =>
+  projectDeckCopy[project.title] ?? project.description;
+
+const combineProjects = (
+  workProjects: Project[],
+  personalProjects: Project[],
+) => [...workProjects, ...personalProjects];
 
 const surfaceText = {
   dark: {
@@ -99,11 +126,11 @@ const surfaceText = {
   },
   ink: {
     page: "bg-[#050505] text-white",
-    panel: "border-[#2a2a2a] bg-[#101010] text-white",
+    panel: "border-[#2a2a2a] bg-[#0f0f10] text-white",
     subtle: "text-zinc-300",
     faint: "text-zinc-500",
-    badge: "border-[#303030] bg-[#181818] text-zinc-100",
-    button: "bg-[#d8ff62] text-zinc-950 hover:bg-[#c8ef55]",
+    badge: "border-[#2d2d30] bg-[#171719] text-zinc-100",
+    button: "bg-[#d6eadf] text-[#07110d] hover:bg-[#e4f4eb]",
   },
 } satisfies Record<Surface, Record<string, string>>;
 
@@ -161,7 +188,7 @@ const ProjectVisual = ({
 }) => (
   <div
     className={cn(
-      "relative min-h-48 overflow-hidden rounded-xl bg-zinc-900",
+      "min-h-48 relative overflow-hidden rounded-xl bg-zinc-900",
       className,
     )}
   >
@@ -175,7 +202,7 @@ const ProjectVisual = ({
       />
     ) : (
       <div
-        className="flex size-full min-h-48 items-center justify-center"
+        className="size-full min-h-48 flex items-center justify-center"
         style={{ background: getProjectGradient(project.title) }}
       >
         <span className="max-w-xs px-5 text-center text-3xl font-semibold text-white">
@@ -240,33 +267,64 @@ const ProjectStackCard = ({
   index,
   surface,
   layout = "split",
+  density = "standard",
+  scrollMode = "window",
+  isLast = false,
 }: {
   project: Project;
   index: number;
   surface: Surface;
   layout?: "split" | "editorial";
+  density?: "standard" | "compact";
+  scrollMode?: "window" | "contained";
+  isLast?: boolean;
 }) => {
   const isPaper = surface === "paper";
+  const isCompact = density === "compact";
+  const isContained = scrollMode === "contained";
 
   return (
     <ScrollStackItem
       itemClassName={cn(
-        "!h-auto !min-h-[30rem] !rounded-2xl !p-0",
+        "!h-auto !rounded-2xl !p-0",
+        isContained
+          ? cn("!mt-0 !min-h-[29rem]", isLast ? "!mb-0" : "!mb-28")
+          : isCompact
+            ? "!mb-10 !mt-0 !min-h-[22rem]"
+            : "!min-h-[30rem]",
         "overflow-hidden border shadow-2xl",
         surfaceText[surface].panel,
-        isPaper ? "shadow-zinc-300/50" : "shadow-black/50",
+        isPaper ? "shadow-zinc-300/50" : "shadow-black/45",
       )}
     >
-      <article className="grid min-h-[30rem] gap-0 lg:grid-cols-[0.9fr_1.1fr]">
+      <article
+        className={cn(
+          "grid gap-0 lg:grid-cols-[0.9fr_1.1fr]",
+          isContained
+            ? "min-h-[29rem]"
+            : isCompact
+              ? "min-h-[22rem]"
+              : "min-h-[30rem]",
+        )}
+      >
         <ProjectVisual
           project={project}
           className={cn(
-            "min-h-64 rounded-none lg:min-h-full",
+            isContained
+              ? "min-h-52 rounded-none lg:min-h-full"
+              : isCompact
+              ? "min-h-48 rounded-none lg:min-h-full"
+              : "min-h-64 rounded-none lg:min-h-full",
             layout === "editorial" && "lg:order-2",
           )}
         />
-        <div className="flex min-w-0 flex-col justify-between gap-8 p-6 sm:p-8">
-          <div className="flex flex-col gap-5">
+        <div
+          className={cn(
+            "flex min-w-0 flex-col justify-between",
+            isCompact ? "gap-6 p-5 sm:p-6" : "gap-8 p-6 sm:p-8",
+          )}
+        >
+          <div className={cn("flex flex-col", isCompact ? "gap-4" : "gap-5")}>
             <div className="flex items-start justify-between gap-4">
               <ProjectMeta
                 project={project}
@@ -282,22 +340,31 @@ const ProjectStackCard = ({
               </span>
             </div>
             <div className="flex flex-col gap-3">
-              <h3 className="text-balance text-3xl font-semibold leading-tight sm:text-5xl">
+              <h3
+                className={cn(
+                  "text-balance font-semibold leading-tight",
+                  isCompact ? "text-2xl sm:text-4xl" : "text-3xl sm:text-5xl",
+                )}
+              >
                 {project.title}
               </h3>
               <p
                 className={cn(
-                  "max-w-2xl text-pretty text-base leading-7",
+                  "text-pretty max-w-2xl leading-7",
+                  isCompact ? "line-clamp-3 text-sm" : "text-base",
                   surfaceText[surface].subtle,
                 )}
               >
-                {project.description}
+                {getProjectDeckCopy(project)}
               </p>
             </div>
           </div>
           <div className="flex flex-col gap-5">
             <ProjectTags project={project} surface={surface} />
-            <Button asChild className={cn("w-fit", surfaceText[surface].button)}>
+            <Button
+              asChild
+              className={cn("w-fit", surfaceText[surface].button)}
+            >
               <Link href={`/works/${project.id}`}>
                 View Project
                 <ArrowUpRight />
@@ -314,21 +381,42 @@ const ProjectStack = ({
   projects,
   surface,
   layout = "split",
+  density = "standard",
+  scrollMode = "window",
 }: {
   projects: Project[];
   surface: Surface;
   layout?: "split" | "editorial";
+  density?: "standard" | "compact";
+  scrollMode?: "window" | "contained";
 }) => (
   <ScrollStack
-    useWindowScroll
-    itemDistance={110}
-    itemStackDistance={28}
-    itemScale={0.018}
-    baseScale={0.9}
-    stackPosition="14%"
-    scaleEndPosition="7%"
-    className="overflow-visible"
-    innerClassName="scroll-stack-inner min-h-screen px-0 pb-[42rem] pt-10 sm:pt-16"
+    useWindowScroll={scrollMode === "window"}
+    itemDistance={
+      scrollMode === "contained" ? 112 : density === "compact" ? 40 : 110
+    }
+    itemStackDistance={density === "compact" ? 16 : 28}
+    itemScale={density === "compact" ? 0.012 : 0.018}
+    baseScale={density === "compact" ? 0.94 : 0.9}
+    stackPosition={
+      scrollMode === "contained" ? "5%" : density === "compact" ? "12%" : "14%"
+    }
+    scaleEndPosition={
+      scrollMode === "contained" ? "2%" : density === "compact" ? "6%" : "7%"
+    }
+    className={cn(
+      scrollMode === "contained"
+        ? "h-[56vh] max-h-[36rem] min-h-[30rem] overflow-x-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        : "overflow-visible",
+    )}
+    innerClassName={cn(
+      "scroll-stack-inner px-0",
+      scrollMode === "contained"
+        ? "min-h-full pb-8 pt-0"
+        : density === "compact"
+          ? "min-h-screen pb-24 pt-8 sm:pb-32 sm:pt-12"
+          : "min-h-screen pb-[42rem] pt-8 sm:pt-12",
+    )}
   >
     {projects.map((project, index) => (
       <ProjectStackCard
@@ -337,10 +425,49 @@ const ProjectStack = ({
         index={index}
         surface={surface}
         layout={layout}
+        density={density}
+        scrollMode={scrollMode}
+        isLast={index === projects.length - 1}
       />
     ))}
   </ScrollStack>
 );
+
+const ProjectArchive = ({
+  projects,
+  surface,
+}: {
+  projects: Project[];
+  surface: Surface;
+}) => {
+  if (projects.length === 0) return null;
+
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {projects.map((project) => (
+        <Link
+          key={`${project.id}-${project.isPersonal ? "personal" : "work"}-archive`}
+          href={`/works/${project.id}`}
+          className={cn(
+            "group flex min-w-0 items-center justify-between gap-4 rounded-xl border p-4 transition-colors hover:border-[#b7c8ff]/50 hover:bg-[#171719] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d6eadf]",
+            surfaceText[surface].panel,
+          )}
+        >
+          <div className="min-w-0">
+            <div className="truncate text-sm font-semibold text-white">
+              {project.title}
+            </div>
+            <div className={cn("mt-1 text-xs", surfaceText[surface].faint)}>
+              {project.isPersonal ? "Lab" : "Client"}{" "}
+              {project.year ? `· ${project.year}` : ""}
+            </div>
+          </div>
+          <ArrowUpRight className="size-4 shrink-0 text-[#d6eadf] transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </Link>
+      ))}
+    </div>
+  );
+};
 
 const SkillList = ({ surface }: { surface: Surface }) => (
   <div className="grid gap-3 sm:grid-cols-2">
@@ -413,7 +540,9 @@ const ChatPanel = ({
   <section
     className={cn(
       "rounded-2xl border p-4",
-      compact ? "flex flex-col gap-4" : "grid gap-5 lg:grid-cols-[0.75fr_1.25fr]",
+      compact
+        ? "flex flex-col gap-4"
+        : "grid gap-5 lg:grid-cols-[0.75fr_1.25fr]",
       surfaceText[surface].panel,
     )}
   >
@@ -436,19 +565,19 @@ const ChatPanel = ({
 const CommandChatPanel = () => (
   <StarBorder
     as="section"
-    color="white"
+    color="#d7c8ff"
     speed="6s"
-    thickness={3}
+    thickness={2}
     className="block w-full"
-    innerClassName="flex flex-col gap-5 p-5 text-left !bg-[#101010] !bg-none !border-[#2a2a2a]"
+    innerClassName="flex flex-col gap-5 p-5 text-left !border-[#2a2a2a] !bg-[#0f0f10] !bg-none"
   >
     <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-zinc-500">
       <ShinyIcon
         svg={SPARKLES_SVG}
         size={14}
         speed={2.4}
-        color="#9ca3af"
-        shineColor="#ffffff"
+        color="#a1a1aa"
+        shineColor="#d7c8ff"
       />
       <span>ask marcos</span>
     </div>
@@ -458,8 +587,8 @@ const CommandChatPanel = () => (
         Skip the scroll. Just ask.
       </h2>
       <p className="text-sm leading-6 text-zinc-400">
-        Trained on this portfolio. Ready to talk shop: projects, stack,
-        experience, availability.
+        Trained on this portfolio. Ask about projects, stack, experience, or
+        whether I am available for the next build.
       </p>
     </div>
 
@@ -477,7 +606,7 @@ const SectionNavigation = ({ compact = false }: { compact?: boolean }) => (
         key={sectionLink.href}
         href={sectionLink.href}
         className={cn(
-          "flex items-center justify-between rounded-xl border border-[#303030] bg-[#181818] font-medium text-zinc-100 transition-colors hover:border-zinc-500 hover:bg-[#202020] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8ff62]",
+          "flex items-center justify-between rounded-xl border border-[#303030] bg-[#171719] font-medium text-zinc-100 transition-colors hover:border-[#b7c8ff]/50 hover:bg-[#1d1d20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d6eadf]",
           compact ? "px-3 py-2 text-xs" : "px-3 py-2 text-sm",
         )}
       >
@@ -508,7 +637,7 @@ const BackToTopButton = () => {
       aria-label="Back to top"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
-        "fixed bottom-4 right-4 z-40 flex size-11 items-center justify-center rounded-full border border-[#303030] bg-[#d8ff62] text-zinc-950 shadow-2xl shadow-black/40 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
+        "size-11 fixed bottom-4 right-4 z-40 flex items-center justify-center rounded-full border border-[#303030] bg-[#d6eadf] text-[#07110d] shadow-2xl shadow-black/40 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white",
         isVisible ? "opacity-100" : "pointer-events-none opacity-0",
       )}
     >
@@ -538,10 +667,7 @@ const VariantShell = ({
 }) => (
   <>
     <div
-      className={cn(
-        "fixed inset-0 -z-[9]",
-        surfaceText[surface].page,
-      )}
+      className={cn("fixed inset-0 -z-[9]", surfaceText[surface].page)}
       aria-hidden="true"
     >
       {background}
@@ -576,10 +702,7 @@ const ChosenVariantShell = ({
     </div>
     <main
       id="top"
-      className={cn(
-        "relative left-1/2 w-screen -translate-x-1/2 px-4 pb-40 pt-8 sm:px-6 lg:px-8",
-        surfaceText.ink.page,
-      )}
+      className="relative left-1/2 w-screen -translate-x-1/2 px-4 pb-40 pt-8 text-white sm:px-6 lg:px-8"
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:gap-14">
         <MobileSectionNav />
@@ -600,7 +723,29 @@ const PaperBackground = () => (
 );
 
 const CommandBackground = () => (
-  <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(216,255,98,0.045)_1px,transparent_1px),linear-gradient(rgba(216,255,98,0.035)_1px,transparent_1px)] bg-[size:96px_96px]" />
+  <div className="absolute inset-0 overflow-hidden bg-[#050505]">
+    <div className="absolute inset-0 opacity-75">
+      <SoftAurora
+        speed={0.34}
+        scale={1.25}
+        brightness={0.72}
+        color1="#d6eadf"
+        color2="#d8c7ff"
+        noiseFrequency={2.1}
+        noiseAmplitude={0.82}
+        bandHeight={0.48}
+        bandSpread={0.62}
+        octaveDecay={0.18}
+        layerOffset={0.45}
+        colorSpeed={0.45}
+        enableMouseInteraction={false}
+        mouseInfluence={0.08}
+      />
+    </div>
+    <div className="bg-[#050505]/78 absolute inset-0 backdrop-blur-[1px]" />
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,transparent_0%,rgba(5,5,5,0.35)_38%,#050505_82%)]" />
+    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(215,200,255,0.025)_1px,transparent_1px),linear-gradient(rgba(214,234,223,0.02)_1px,transparent_1px)] bg-[size:96px_96px]" />
+  </div>
 );
 
 const VariantA = ({
@@ -622,10 +767,10 @@ const VariantA = ({
             Variant A - Dark Studio
           </SectionLabel>
           <div className="flex flex-col gap-3">
-            <h1 className="max-w-4xl text-balance text-4xl font-semibold leading-none sm:text-6xl">
+            <h1 className="text-balance max-w-4xl text-4xl font-semibold leading-none sm:text-6xl">
               Calm dark portfolio, readable by default.
             </h1>
-            <p className="max-w-2xl text-pretty text-lg leading-8 text-zinc-300">
+            <p className="text-pretty max-w-2xl text-lg leading-8 text-zinc-300">
               {prototypeQuestion}
             </p>
           </div>
@@ -639,7 +784,10 @@ const VariantA = ({
       <ChatPanel surface="dark" title="Ask about the work before scrolling." />
       <section className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <SectionLabel surface="dark" icon={<Briefcase className="size-3.5" />}>
+          <SectionLabel
+            surface="dark"
+            icon={<Briefcase className="size-3.5" />}
+          >
             Projects
           </SectionLabel>
           <h2 className="text-balance text-4xl font-semibold">
@@ -673,7 +821,7 @@ const VariantB = ({
       background={<PaperBackground />}
     >
       <header className="grid gap-6 lg:grid-cols-[0.7fr_1.3fr] lg:items-stretch">
-        <div className="flex min-h-80 flex-col justify-between rounded-2xl border border-zinc-200 bg-zinc-950 p-6 text-white">
+        <div className="min-h-80 flex flex-col justify-between rounded-2xl border border-zinc-200 bg-zinc-950 p-6 text-white">
           <SectionLabel surface="dark" icon={<Sparkles className="size-3.5" />}>
             Variant B - Paper Index
           </SectionLabel>
@@ -698,7 +846,10 @@ const VariantB = ({
                 ["AI", "Products"],
                 ["Cloud", "Infra"],
               ].map(([value, caption]) => (
-                <div key={value} className="rounded-xl border border-zinc-200 p-3">
+                <div
+                  key={value}
+                  className="rounded-xl border border-zinc-200 p-3"
+                >
                   <div className="text-xl font-semibold">{value}</div>
                   <div className="text-xs text-zinc-500">{caption}</div>
                 </div>
@@ -715,7 +866,10 @@ const VariantB = ({
       <section className="grid gap-8 lg:grid-cols-[17rem_1fr]">
         <aside className="lg:sticky lg:top-24 lg:h-fit">
           <div className="rounded-2xl border border-zinc-200 bg-white p-5">
-            <SectionLabel surface="paper" icon={<Briefcase className="size-3.5" />}>
+            <SectionLabel
+              surface="paper"
+              icon={<Briefcase className="size-3.5" />}
+            >
               Project Stack
             </SectionLabel>
             <p className="mt-4 text-sm leading-6 text-zinc-700">
@@ -736,69 +890,84 @@ const VariantC = ({
   current,
 }: PrototypeAppStyleClientProps & { current: string }) => {
   const projects = combineProjects(workProjects, personalProjects).slice(0, 9);
+  const featuredProjects = projects.slice(0, 5);
+  const archiveProjects = projects.slice(5);
 
   return (
     <ChosenVariantShell current={current}>
-      <div className="grid gap-8 lg:grid-cols-[18rem_1fr]">
+      <div className="grid gap-8 lg:grid-cols-[19rem_1fr]">
         <aside className="hidden lg:sticky lg:top-24 lg:block lg:h-fit">
-          <div className="flex flex-col gap-4 rounded-2xl border border-[#2a2a2a] bg-[#101010] p-4">
-            <SectionLabel surface="ink" icon={<UserRound className="size-3.5" />}>
-              Marcos Fitzsimons
+          <div className="flex flex-col gap-5 border-y border-white/10 py-6">
+            <SectionLabel
+              surface="ink"
+              icon={<UserRound className="size-3.5" />}
+            >
+              Marcos Valentín Fitzsimons
             </SectionLabel>
-            <h1 className="text-balance text-3xl font-semibold leading-tight">
-              Full-Stack Developer
-            </h1>
-            <p className="text-pretty text-xs leading-5 text-zinc-300">
-              {sidebarCopy}
-            </p>
-            <SectionNavigation />
+            <div>
+              <h1 className="text-balance text-4xl font-semibold leading-tight">
+                Full-stack products, from interface to infrastructure.
+              </h1>
+              <p className="text-pretty mt-4 text-sm leading-6 text-zinc-400">
+                {sidebarCopy}
+              </p>
+            </div>
+            <div className="flex flex-col">
+              {["4+ years shipping", "Web / Mobile", "AI / Cloud"].map(
+                (item) => (
+                  <div
+                    key={item}
+                    className="border-t border-white/10 px-1 py-3 text-xs uppercase tracking-normal text-zinc-500"
+                  >
+                    {item}
+                  </div>
+                ),
+              )}
+            </div>
           </div>
-          <div className="mt-5">
-            <CommandChatPanel />
+          <div className="mt-5 border-b border-white/10 pb-6">
+            <div className="mb-3 text-xs font-semibold uppercase tracking-normal text-zinc-500">
+              Elsewhere
+            </div>
+            <SocialLinks />
           </div>
         </aside>
         <main className="flex min-w-0 flex-col gap-8">
-          <section
-            id="about"
-            className="scroll-mt-24 rounded-2xl border border-[#2a2a2a] bg-[#101010] p-6"
-          >
-            <SectionLabel surface="ink" icon={<UserRound className="size-3.5" />}>
-              About
-            </SectionLabel>
-            <div className="mt-5 flex flex-col gap-6">
-              <p className="max-w-4xl text-pretty text-2xl font-medium leading-10">
-                {profileCopy}
-              </p>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {proofCards.map(([value, label]) => (
-                  <div
-                    key={label}
-                    className="rounded-xl border border-[#303030] bg-[#181818] p-3 text-center sm:p-4"
-                  >
-                    <div className="text-lg font-semibold text-white sm:text-xl">
-                      {value}
-                    </div>
-                    <div className="mt-1 text-xs text-zinc-400 sm:text-sm">
-                      {label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-          <div className="lg:hidden">
+          <section id="ask" className="scroll-mt-24">
             <CommandChatPanel />
-          </div>
-          <section id="work" className="flex scroll-mt-24 flex-col gap-6">
+          </section>
+          <section id="works" className="flex scroll-mt-24 flex-col gap-6">
             <div>
-              <SectionLabel surface="ink" icon={<Code2 className="size-3.5" />}>
-                Work
+              <SectionLabel
+                surface="ink"
+                icon={<FolderOpenDot className="size-3.5" />}
+              >
+                Works
               </SectionLabel>
-              <h2 className="mt-4 text-balance text-5xl font-semibold leading-tight">
-                Projects stack into a single product narrative.
+              <h2 className="text-balance mt-4 max-w-2xl text-4xl font-semibold leading-tight">
+                Selected projects.
               </h2>
+              <p className="text-pretty mt-3 max-w-xl text-sm leading-6 text-zinc-400">
+                A short, scrollable look at the work worth opening first.
+              </p>
             </div>
-            <ProjectStack projects={projects} surface="ink" />
+            <ProjectStack
+              projects={featuredProjects}
+              surface="ink"
+              density="compact"
+              scrollMode="contained"
+            />
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-sm font-semibold uppercase tracking-normal text-zinc-400">
+                  More Works
+                </h3>
+                <span className="font-mono text-xs tabular-nums text-zinc-600">
+                  {archiveProjects.length}
+                </span>
+              </div>
+              <ProjectArchive projects={archiveProjects} surface="ink" />
+            </div>
           </section>
           <section id="skills" className="flex scroll-mt-24 flex-col gap-6">
             <SectionLabel surface="ink" icon={<Layers3 className="size-3.5" />}>
