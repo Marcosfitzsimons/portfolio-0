@@ -9,6 +9,20 @@ const tagFixes: Record<string, string[]> = {
   Fabebus: ["MongoDB", "Express", "React", "Node.js"],
 };
 
+const showcaseOrderByTitle: Record<string, number> = {
+  Brixa: 10,
+  "Travel Booking App": 20,
+  Fabebus: 20,
+  "Grab & Eat": 30,
+  Claimence: 40,
+  KeySwap: 50,
+  "Golfo Nuevo Admin": 60,
+  "Cash Tally": 100,
+  "Feeling the Groove": 110,
+  "Multi Step Form": 120,
+  "Rest Countries App": 130,
+};
+
 // New projects to insert
 const newProjects = [
   {
@@ -26,6 +40,7 @@ const newProjects = [
     tags: ["React Native", "React", "Node.js", "PostgreSQL"],
     status: "live",
     year: "2024",
+    showcaseOrder: showcaseOrderByTitle["Grab & Eat"],
   },
   {
     title: "KeySwap",
@@ -42,6 +57,7 @@ const newProjects = [
     tags: ["React", "Node.js", "PostgreSQL"],
     status: "live",
     year: "2024",
+    showcaseOrder: showcaseOrderByTitle.KeySwap,
   },
   {
     title: "Claimence",
@@ -58,6 +74,7 @@ const newProjects = [
     tags: ["React", "Node.js", "Terraform", "AWS", "PostgreSQL"],
     status: "live",
     year: "2025",
+    showcaseOrder: showcaseOrderByTitle.Claimence,
   },
   {
     title: "Brixa",
@@ -74,6 +91,7 @@ const newProjects = [
     tags: ["React", "Node.js", "PostgreSQL"],
     status: "live",
     year: "2025",
+    showcaseOrder: showcaseOrderByTitle.Brixa,
   },
   {
     title: "Cash Tally",
@@ -90,6 +108,7 @@ const newProjects = [
     tags: ["Next.js", "PostgreSQL"],
     status: "live",
     year: "2026",
+    showcaseOrder: showcaseOrderByTitle["Cash Tally"],
   },
 ];
 
@@ -99,6 +118,15 @@ async function main() {
     const result = await prisma.project.updateMany({
       where: { title },
       data: { tags },
+    });
+    console.log(`  ${title}: updated ${result.count} record(s)`);
+  }
+
+  console.log("\nUpdating showcase order...");
+  for (const [title, showcaseOrder] of Object.entries(showcaseOrderByTitle)) {
+    const result = await prisma.project.updateMany({
+      where: { title },
+      data: { showcaseOrder },
     });
     console.log(`  ${title}: updated ${result.count} record(s)`);
   }

@@ -6,7 +6,9 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   try {
-    const data = await prisma.project.findMany();
+    const data = await prisma.project.findMany({
+      orderBy: [{ showcaseOrder: "asc" }, { id: "asc" }],
+    });
     return res.status(200).json(data);
   } catch (error) {
     res.status(403).json({ err: "Error has occured while fetching projects" });

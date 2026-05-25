@@ -30,6 +30,7 @@ const toPrototypeProject = (project: {
   tags: string[];
   status: string | null;
   year: string | null;
+  showcaseOrder: number;
 }): Project => ({
   ...project,
   status: projectStatuses.has(project.status ?? "")
