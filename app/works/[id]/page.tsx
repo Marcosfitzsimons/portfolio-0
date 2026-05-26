@@ -1,22 +1,13 @@
+import { CommandBackground } from "@/components/home/command-background";
+import { Badge } from "@/components/ui/badge";
+import { getProjectGradient } from "@/lib/project-gradients";
+import type { Project } from "@/lib/project-types";
 import { getSingleProject } from "@/lib/projects";
-import { ChevronRight, ExternalLink } from "lucide-react";
+import { skillTagMap } from "@/lib/skills-source";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Metadata } from "next";
-import { getProjectGradient } from "@/lib/project-gradients";
-import { Badge } from "@/components/ui/badge";
-import { skillTagMap } from "@/lib/skills-source";
-import type { Project } from "@/lib/project-types";
-
-// Development:
-
-// async function getProject(projectId: string) {
-//   const res = await fetch(`${process.env.BASE_URL}/api/projects/${projectId}`, {
-//     cache: "no-store",
-//   });
-//   // console.log(res);
-//   return res.json();
-// }
 
 export const metadata: Metadata = {
   title: "Single project",
@@ -38,109 +29,150 @@ export default async function SingleWorkPage({
     : null;
 
   if (project === null) {
-    // Handle the case where data is null, such as showing an error message
     return (
-      <div className="mt-16 flex items-center justify-center">
-        Project not found
-      </div>
+      <main className="flex min-h-screen items-center justify-center bg-[#050505] px-4 text-white">
+        <div className="rounded-2xl border border-[#2a2a2a] bg-[#0f0f10] p-6 text-center">
+          Project not found
+        </div>
+      </main>
     );
   }
 
   return (
-    <section className="flex flex-col items-center gap-5 pb-10 pt-5 sm:mx-auto sm:w-[80%]">
-      {project.coverImage ? (
-        <Image
-          src={project.coverImage}
-          alt="Project cover image"
-          sizes="100vw"
-          className="h-auto w-full rounded-2xl"
-          width={500}
-          height={300}
-        />
-      ) : (
-        <div
-          className="flex aspect-video w-full items-center justify-center rounded-2xl"
-          style={{ background: getProjectGradient(project.title) }}
-        >
-          <span className="text-4xl font-bold text-white/20">
-            {project.title}
-          </span>
-        </div>
-      )}
+    <>
+      <div
+        className="fixed inset-0 -z-[9] bg-[#050505] text-white"
+        aria-hidden="true"
+      >
+        <CommandBackground />
+      </div>
+      <main className="relative left-1/2 w-screen -translate-x-1/2 px-4 pb-24 pt-8 text-white sm:px-6 lg:px-8">
+        <article className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+          <Link
+            href="/#works"
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#2d2d30] bg-[#171719] px-3 py-1 text-xs font-semibold uppercase tracking-normal text-zinc-100 transition-colors hover:border-[#b7c8ff]/50"
+          >
+            <ArrowLeft className="size-3.5" />
+            Works
+          </Link>
 
-      <div className="flex flex-wrap items-center gap-1 self-start">
-        <Link href="/works" className="font-light">
-          Works
-        </Link>
-        <ChevronRight className="relative top-[1px] h-4 w-4" />
-        <p className="font-medium text-white">{project.title}</p>
-        <span className="select-none rounded-2xl bg-violet-400 px-2 py-0.5 text-xs font-medium sm:ml-1">
-          {project.date}
-        </span>
-      </div>
-      <p className="w-full indent-3 text-sm text-muted-foreground sm:indent-5">
-        {project.description}
-      </p>
-      {project.tags && project.tags.length > 0 && (
-        <div className="flex w-full flex-wrap gap-1.5">
-          {[...project.tags]
-            .sort((a, b) => {
-              const aOrder = skillTagMap.get(a)?.groupOrder ?? Infinity;
-              const bOrder = skillTagMap.get(b)?.groupOrder ?? Infinity;
-              return aOrder - bOrder;
-            })
-            .map((tag) => (
-              <Badge key={tag} className="text-xs bg-white/5 text-white/60 border border-white/10 hover:bg-white/5">
-                {tag}
-              </Badge>
-            ))}
-        </div>
-      )}
-      <div className="flex w-full flex-col gap-1 text-sm">
-        {project.siteUrl && (
-          <div className="flex flex-col">
-            <p className="text-white">Website</p>
-            <Link
-              href={project.siteUrl}
-              className="flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-300"
-              target="_blank"
+          <header className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-normal text-zinc-500">
+                <span>{project.isPersonal ? "Exploration" : "Client Work"}</span>
+                <span aria-hidden="true">/</span>
+                <span>{project.year ?? project.date}</span>
+                {project.status && (
+                  <>
+                    <span aria-hidden="true">/</span>
+                    <span>{project.status}</span>
+                  </>
+                )}
+              </div>
+              <h1 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">
+                {project.title}
+              </h1>
+              <p className="max-w-3xl text-pretty text-sm leading-7 text-zinc-400 sm:text-base">
+                {project.description}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-[#2a2a2a] bg-[#0f0f10] p-4">
+              <div className="flex flex-col gap-4 text-sm">
+                {project.siteUrl && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs uppercase tracking-normal text-zinc-500">
+                      Website
+                    </span>
+                    <Link
+                      href={project.siteUrl}
+                      className="inline-flex items-center gap-1 break-all text-[#d6eadf] transition-colors hover:text-[#e4f4eb]"
+                      target="_blank"
+                    >
+                      {project.siteUrl}
+                      <ExternalLink className="size-4 shrink-0" />
+                    </Link>
+                  </div>
+                )}
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs uppercase tracking-normal text-zinc-500">
+                    Stack
+                  </span>
+                  <p className="leading-6 text-zinc-300">{project.stack}</p>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {project.coverImage ? (
+            <Image
+              src={project.coverImage}
+              alt={`${project.title} cover image`}
+              sizes="100vw"
+              className="h-auto w-full rounded-2xl border border-[#2a2a2a] bg-[#0f0f10]"
+              width={1200}
+              height={720}
+              priority
+            />
+          ) : (
+            <div
+              className="flex aspect-video w-full items-center justify-center rounded-2xl border border-[#2a2a2a]"
+              style={{ background: getProjectGradient(project.title) }}
             >
-              {project.siteUrl}
-              <ExternalLink className="h-4 w-4" />
-            </Link>
+              <span className="px-6 text-center text-4xl font-bold text-white/30">
+                {project.title}
+              </span>
+            </div>
+          )}
+
+          {project.tags && project.tags.length > 0 && (
+            <div className="flex w-full flex-wrap gap-1.5">
+              {[...project.tags]
+                .sort((a, b) => {
+                  const aOrder = skillTagMap.get(a)?.groupOrder ?? Infinity;
+                  const bOrder = skillTagMap.get(b)?.groupOrder ?? Infinity;
+                  return aOrder - bOrder;
+                })
+                .map((tag) => (
+                  <Badge
+                    key={tag}
+                    className="rounded-full border border-white/10 bg-white/[0.045] text-xs text-zinc-100 hover:bg-white/[0.075]"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+            </div>
+          )}
+
+          <div className="flex w-full flex-col gap-3">
+            {project.images.map((image) => (
+              <Image
+                key={image}
+                src={image}
+                alt={`${project.title} project image`}
+                sizes="100vw"
+                className="h-auto w-full rounded-2xl border border-[#2a2a2a] bg-[#0f0f10]"
+                width={1200}
+                height={720}
+              />
+            ))}
           </div>
-        )}
-        <div className="flex flex-col">
-          <p className="text-white">Stack</p>
-          <p className="font-light">{project.stack}</p>
-        </div>
-      </div>
-      <div className="flex w-full flex-col gap-2">
-        {project.images.map((image) => (
-          <Image
-            key={image}
-            src={image}
-            alt="Project image"
-            sizes="100vw"
-            className="h-auto w-full rounded-2xl"
-            width={500}
-            height={300}
-          />
-        ))}
-      </div>
-      <div className="flex w-full max-w-sm flex-col gap-2 sm:grid sm:w-full sm:max-w-full sm:grid-cols-2">
-        {project.mobileImages.map((image) => (
-          <Image
-            key={image}
-            src={image}
-            alt="Project image"
-            sizes="100vw"
-            className="h-auto w-full rounded-2xl"
-            width={400}
-            height={800}
-          />
-        ))}
-      </div>
-    </section>
+
+          <div className="flex w-full max-w-sm flex-col gap-3 sm:grid sm:w-full sm:max-w-full sm:grid-cols-2">
+            {project.mobileImages.map((image) => (
+              <Image
+                key={image}
+                src={image}
+                alt={`${project.title} mobile project image`}
+                sizes="100vw"
+                className="h-auto w-full rounded-2xl border border-[#2a2a2a] bg-[#0f0f10]"
+                width={400}
+                height={800}
+              />
+            ))}
+          </div>
+        </article>
+      </main>
+    </>
   );
 }
