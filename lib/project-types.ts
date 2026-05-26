@@ -15,6 +15,7 @@ export interface Project {
   tags?: string[];
   status?: ProjectStatus;
   year?: string;
+  showcaseOrder: number;
 }
 
 // Status badges

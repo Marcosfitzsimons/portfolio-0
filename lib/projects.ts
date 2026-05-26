@@ -3,7 +3,9 @@ import prisma from "@/prisma/client";
 export const getAllProjects = async () => {
   // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  const data = await prisma.project.findMany();
+  const data = await prisma.project.findMany({
+    orderBy: [{ showcaseOrder: "asc" }, { id: "asc" }],
+  });
 
   return data;
 };
@@ -13,6 +15,7 @@ export const getWorkProjects = async () => {
     where: {
       isPersonal: false,
     },
+    orderBy: [{ showcaseOrder: "asc" }, { id: "asc" }],
   });
   return data;
 };
@@ -22,9 +25,7 @@ export const getPersonalProjects = async () => {
     where: {
       isPersonal: true,
     },
-    orderBy: {
-      id: "asc",
-    },
+    orderBy: [{ showcaseOrder: "asc" }, { id: "asc" }],
   });
   return data;
 };

@@ -11,18 +11,19 @@ datasource db {
 }
 
 model Project {
-  id           Int      @id @default(autoincrement())
-  title        String
-  description  String
-  stack        String
-  siteUrl      String
-  coverImageSm String
-  coverImage   String
-  images       String[]
-  mobileImages String[]
-  isPersonal   Boolean
-  date         String
-  tags         String[]
-  status       String?
-  year         String?
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String
+  stack         String
+  siteUrl       String
+  coverImageSm  String
+  coverImage    String
+  images        String[]
+  mobileImages  String[]
+  isPersonal    Boolean
+  date          String
+  tags          String[]
+  status        String?
+  year          String?
+  showcaseOrder Int      @default(100)
 }

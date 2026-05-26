@@ -1,5 +1,5 @@
-import SecondaryButton from "@/components/secondary-button";
 import { Home } from "lucide-react";
+import Link from "next/link";
 
 export default function NotFound() {
   return (
@@ -11,12 +11,13 @@ export default function NotFound() {
         <p className="text-lg font-medium lg:text-xl">
           Sorry, we could not find this page
         </p>
-        <SecondaryButton
+        <Link
           href="/"
-          icon={<Home className="h-4 w-4 md:h-5 md:w-5" strokeWidth={2.3} />}
+          className="inline-flex items-center gap-2 rounded-full border border-[#2d2d30] bg-[#171719] px-4 py-2 text-sm font-medium text-zinc-100 transition-colors hover:border-[#b7c8ff]/50 hover:bg-[#1d1d20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d6eadf]"
         >
+          <Home className="size-4" strokeWidth={2.3} />
           Return home
-        </SecondaryButton>
+        </Link>
       </div>
     </div>
   );

@@ -4,34 +4,115 @@ const prisma = new PrismaClient();
 
 // Fix tags on existing projects
 const tagFixes: Record<string, string[]> = {
-  "Multi Step Form": ["Next.js", "Framer Motion", "TypeScript"],
-  "Feeling the Groove": ["Next.js", "TypeScript"],
-  Fabebus: ["MongoDB", "Express", "React", "Node.js"],
+  Brixa: ["OpenAI API", "React.js", "Node.js", "PostgreSQL"],
+  "Travel Booking App": [
+    "MongoDB",
+    "Express.js",
+    "React.js",
+    "Node.js",
+    "Mercado Pago",
+  ],
+  "Grab & Eat": ["React Native", "React.js", "Node.js", "PostgreSQL"],
+  Claimence: ["AWS", "Terraform", "React.js", "Node.js", "PostgreSQL"],
+  KeySwap: ["React.js", "Node.js", "PostgreSQL", "TypeScript"],
+  "Golfo Nuevo Admin": [
+    "Next.js",
+    "React.js",
+    "TypeScript",
+    "TailwindCSS",
+    "shadcn/ui",
+    "Node.js",
+    "Express.js",
+    "MongoDB",
+  ],
+  "Multi Step Form": ["Next.js", "Motion", "TypeScript"],
+  "Feeling the Groove": ["Next.js", "TypeScript", "Prisma", "PostgreSQL"],
+  "Cash Tally": ["Next.js", "PostgreSQL"],
+  "Rest Countries App": ["Next.js", "TypeScript", "React.js", "TailwindCSS"],
+  "Ecommerce Product Page": ["React.js", "TailwindCSS"],
+};
+
+const showcaseOrderByTitle: Record<string, number> = {
+  Brixa: 10,
+  "Travel Booking App": 20,
+  "Grab & Eat": 30,
+  Claimence: 40,
+  KeySwap: 50,
+  "Golfo Nuevo Admin": 60,
+  "Multi Step Form": 100,
+  "Cash Tally": 110,
+  "Feeling the Groove": 120,
+  "Rest Countries App": 130,
+  "Ecommerce Product Page": 140,
+};
+
+const projectCopyUpdates: Record<
+  string,
+  {
+    description: string;
+    stack: string;
+    date: string;
+    year: string;
+  }
+> = {
+  Brixa: {
+    description:
+      "Production AI-powered hotel operations platform with tool-using agents for guest Q&A, booking and reservation workflows, guest communication, and follow-ups.",
+    stack: "OpenAI API, React.js, Node.js, PostgreSQL, Microservices",
+    date: "2025 - Present",
+    year: "2025 - Present",
+  },
+  "Travel Booking App": {
+    description:
+      "Production travel booking platform built for Fabebus with client booking, authentication, seat reservations, Mercado Pago payments, and a React admin dashboard.",
+    stack:
+      "Node.js, Express.js, MongoDB, React.js, TypeScript, shadcn/ui, Mercado Pago API",
+    date: "2023 - 2024",
+    year: "2023 - 2024",
+  },
+  "Grab & Eat": {
+    description:
+      "Autonomous grocery store platform with a React Native customer app, React admin/backoffice, Node.js backend, and staffless checkout flows.",
+    stack: "React Native, React.js, Node.js, PostgreSQL",
+    date: "2024 - 2025",
+    year: "2024 - 2025",
+  },
+  Claimence: {
+    description:
+      "AI-powered coverage analysis product where I owned much of the AWS/Terraform infrastructure and deployment setup across dev/stage/prod environments.",
+    stack: "AWS, Terraform, React.js, Node.js, PostgreSQL",
+    date: "2025 - 2026",
+    year: "2025 - 2026",
+  },
+  "Cash Tally": {
+    description:
+      "Personal Next.js application built to track daily cash tally for a grocery store.",
+    stack: "Next.js, PostgreSQL",
+    date: "2026",
+    year: "2026",
+  },
 };
 
 // New projects to insert
 const newProjects = [
   {
     title: "Grab & Eat",
-    description:
-      "Autonomous grocery store app that allows clients to download the app and purchase items without human assistance at checkout.",
-    stack: "React Native, React, Node.js, PostgreSQL",
+    ...projectCopyUpdates["Grab & Eat"],
     siteUrl: "",
     coverImageSm: "",
     coverImage: "",
     images: [],
     mobileImages: [],
     isPersonal: false,
-    date: "2024 - 2025",
-    tags: ["React Native", "React", "Node.js", "PostgreSQL"],
+    tags: ["React Native", "React.js", "Node.js", "PostgreSQL"],
     status: "live",
-    year: "2024",
+    showcaseOrder: showcaseOrderByTitle["Grab & Eat"],
   },
   {
     title: "KeySwap",
     description:
       "Web application for mastering symmetrical inversion in piano, a powerful technique for developing balanced piano skills.",
-    stack: "React, Node.js, PostgreSQL",
+    stack: "React.js, Node.js, PostgreSQL",
     siteUrl: "",
     coverImageSm: "",
     coverImage: "",
@@ -39,57 +120,49 @@ const newProjects = [
     mobileImages: [],
     isPersonal: false,
     date: "2024 - 2025",
-    tags: ["React", "Node.js", "PostgreSQL"],
+    tags: ["React.js", "Node.js", "PostgreSQL", "TypeScript"],
     status: "live",
     year: "2024",
+    showcaseOrder: showcaseOrderByTitle.KeySwap,
   },
   {
     title: "Claimence",
-    description:
-      "AI-powered coverage analysis tool for Financial Lines Claims Professionals. Streamlines decisions from months to minutes.",
-    stack: "React, Node.js, Terraform, AWS, PostgreSQL",
+    ...projectCopyUpdates.Claimence,
     siteUrl: "",
     coverImageSm: "",
     coverImage: "",
     images: [],
     mobileImages: [],
     isPersonal: false,
-    date: "2025 - 2026",
-    tags: ["React", "Node.js", "Terraform", "AWS", "PostgreSQL"],
+    tags: ["AWS", "Terraform", "React.js", "Node.js", "PostgreSQL"],
     status: "live",
-    year: "2025",
+    showcaseOrder: showcaseOrderByTitle.Claimence,
   },
   {
     title: "Brixa",
-    description:
-      "Hotel management system with AI that answers every guest question with professional, secure language. Ensures consistent guest experiences even with new team members.",
-    stack: "React, Node.js, PostgreSQL",
+    ...projectCopyUpdates.Brixa,
     siteUrl: "",
     coverImageSm: "",
     coverImage: "",
     images: [],
     mobileImages: [],
     isPersonal: false,
-    date: "2025 - 2026",
-    tags: ["React", "Node.js", "PostgreSQL"],
+    tags: ["OpenAI API", "React.js", "Node.js", "PostgreSQL"],
     status: "live",
-    year: "2025",
+    showcaseOrder: showcaseOrderByTitle.Brixa,
   },
   {
     title: "Cash Tally",
-    description:
-      "A Next.js application to track daily cash tally for a grocery store.",
-    stack: "Next.js, PostgreSQL",
+    ...projectCopyUpdates["Cash Tally"],
     siteUrl: "",
     coverImageSm: "",
     coverImage: "",
     images: [],
     mobileImages: [],
     isPersonal: true,
-    date: "2026",
     tags: ["Next.js", "PostgreSQL"],
     status: "live",
-    year: "2026",
+    showcaseOrder: showcaseOrderByTitle["Cash Tally"],
   },
 ];
 
@@ -99,6 +172,24 @@ async function main() {
     const result = await prisma.project.updateMany({
       where: { title },
       data: { tags },
+    });
+    console.log(`  ${title}: updated ${result.count} record(s)`);
+  }
+
+  console.log("\nUpdating showcase order...");
+  for (const [title, showcaseOrder] of Object.entries(showcaseOrderByTitle)) {
+    const result = await prisma.project.updateMany({
+      where: { title },
+      data: { showcaseOrder },
+    });
+    console.log(`  ${title}: updated ${result.count} record(s)`);
+  }
+
+  console.log("\nUpdating project copy...");
+  for (const [title, data] of Object.entries(projectCopyUpdates)) {
+    const result = await prisma.project.updateMany({
+      where: { title },
+      data,
     });
     console.log(`  ${title}: updated ${result.count} record(s)`);
   }

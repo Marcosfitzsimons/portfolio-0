@@ -14,8 +14,14 @@ const SocialLinks = () => {
       <div className="flex items-center gap-4">
         <Tooltip>
           <TooltipTrigger asChild>
-            <SocialLink href="https://github.com/Marcosfitzsimons">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl border">
+            <SocialLink
+              href="https://github.com/Marcosfitzsimons"
+              aria-label="View Marcos Fitzsimons on GitHub"
+            >
+              <span
+                className="flex h-10 w-10 items-center justify-center rounded-2xl border"
+                aria-hidden="true"
+              >
                 <Github className="h-[18px] w-[18px] lg:h-5 lg:w-5" />
               </span>
             </SocialLink>
@@ -25,8 +31,14 @@ const SocialLinks = () => {
         <MailButton />
         <Tooltip>
           <TooltipTrigger asChild>
-            <SocialLink href="https://www.linkedin.com/in/marcos-fitzsimons-70a010208/">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl border">
+            <SocialLink
+              href="https://www.linkedin.com/in/marcos-fitzsimons-70a010208/"
+              aria-label="View Marcos Fitzsimons on LinkedIn"
+            >
+              <span
+                className="flex h-10 w-10 items-center justify-center rounded-2xl border"
+                aria-hidden="true"
+              >
                 <Linkedin className="h-[18px] w-[18px] lg:h-5 lg:w-5" />
               </span>
             </SocialLink>
@@ -35,8 +47,11 @@ const SocialLinks = () => {
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <SocialLink href="/cv.pdf" download>
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl border">
+            <SocialLink href="/cv.pdf" download aria-label="Download CV">
+              <span
+                className="flex h-10 w-10 items-center justify-center rounded-2xl border"
+                aria-hidden="true"
+              >
                 <FileDown className="h-[18px] w-[18px] lg:h-5 lg:w-5" />
               </span>
             </SocialLink>
