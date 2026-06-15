@@ -1,9 +1,9 @@
 export type Skill = {
   name: string;
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
+  src?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
   badge?: string;
 };
 
@@ -16,21 +16,59 @@ export type SkillGroup = {
 
 export const skillGroups: SkillGroup[] = [
   {
-    category: "Frontend",
-    emoji: "🖥️",
-    labelClass: "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20",
+    category: "AI Product Systems",
+    emoji: "AI",
+    labelClass: "bg-violet-500/10 text-violet-400 border border-violet-500/20",
     skills: [
+      { name: "Agents" },
+      { name: "Tool calling" },
+      { name: "Structured outputs" },
+      { name: "Prompt design" },
+      { name: "Context engineering" },
+      { name: "Evaluations" },
+      { name: "Guardrails" },
+      { name: "Human-in-the-loop" },
+      { name: "Lifecycle hooks" },
       {
-        name: "JavaScript",
-        src: "/javascript.svg",
-        alt: "JavaScript logo",
+        name: "OpenAI API",
+        src: "/openai.svg",
+        alt: "OpenAI logo",
         width: 24,
         height: 24,
       },
+      { name: "Claude API" },
+      {
+        name: "LangChain",
+        src: "/langchain.svg",
+        alt: "LangChain logo",
+        width: 32,
+        height: 32,
+      },
+      {
+        name: "Vercel AI SDK",
+        src: "/ai-sdk.svg",
+        alt: "Vercel AI SDK logo",
+        width: 38,
+        height: 38,
+      },
+    ],
+  },
+  {
+    category: "Full-Stack Development",
+    emoji: "FS",
+    labelClass: "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20",
+    skills: [
       {
         name: "TypeScript",
         src: "/typescript-icon.svg",
         alt: "TypeScript logo",
+        width: 24,
+        height: 24,
+      },
+      {
+        name: "JavaScript",
+        src: "/javascript.svg",
+        alt: "JavaScript logo",
         width: 24,
         height: 24,
       },
@@ -49,50 +87,6 @@ export const skillGroups: SkillGroup[] = [
         height: 32,
       },
       {
-        name: "React Native",
-        src: "/react.svg",
-        alt: "React Native logo",
-        width: 24,
-        height: 24,
-        badge: "Native",
-      },
-      {
-        name: "CSS",
-        src: "/css-3.svg",
-        alt: "CSS logo",
-        width: 24,
-        height: 24,
-      },
-      {
-        name: "TailwindCSS",
-        src: "/tailwindcss-icon.svg",
-        alt: "TailwindCSS logo",
-        width: 24,
-        height: 24,
-      },
-      {
-        name: "shadcn/ui",
-        src: "/shadcn.svg",
-        alt: "shadcn/ui logo",
-        width: 24,
-        height: 24,
-      },
-      {
-        name: "Motion",
-        src: "/motion.svg",
-        alt: "Motion logo",
-        width: 16,
-        height: 16,
-      },
-    ],
-  },
-  {
-    category: "Backend",
-    emoji: "⚙️",
-    labelClass:
-      "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
-    skills: [
-      {
         name: "Node.js",
         src: "/nodejs.svg",
         alt: "Node.js logo",
@@ -103,6 +97,21 @@ export const skillGroups: SkillGroup[] = [
         name: "Express.js",
         src: "/express.svg",
         alt: "Express.js logo",
+        width: 50,
+        height: 50,
+      },
+      { name: "REST APIs" },
+      {
+        name: "PostgreSQL",
+        src: "/postgresql.svg",
+        alt: "PostgreSQL logo",
+        width: 25,
+        height: 25,
+      },
+      {
+        name: "MongoDB",
+        src: "/mongodb.svg",
+        alt: "MongoDB logo",
         width: 50,
         height: 50,
       },
@@ -123,57 +132,26 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
   {
-    category: "Databases",
-    emoji: "🗄️",
-    labelClass: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+    category: "Mobile Development",
+    emoji: "APP",
+    labelClass:
+      "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
     skills: [
       {
-        name: "MongoDB",
-        src: "/mongodb.svg",
-        alt: "MongoDB logo",
-        width: 50,
-        height: 50,
-      },
-      {
-        name: "PostgreSQL",
-        src: "/postgresql.svg",
-        alt: "PostgreSQL logo",
-        width: 25,
-        height: 25,
-      },
-    ],
-  },
-  {
-    category: "AI & Automation",
-    emoji: "🤖",
-    labelClass: "bg-violet-500/10 text-violet-400 border border-violet-500/20",
-    skills: [
-      {
-        name: "OpenAI API",
-        src: "/openai.svg",
-        alt: "OpenAI logo",
+        name: "React Native",
+        src: "/react.svg",
+        alt: "React Native logo",
         width: 24,
         height: 24,
+        badge: "Native",
       },
-      {
-        name: "LangChain",
-        src: "/langchain.svg",
-        alt: "LangChain logo",
-        width: 32,
-        height: 32,
-      },
-      {
-        name: "Vercel AI SDK",
-        src: "/ai-sdk.svg",
-        alt: "Vercel AI SDK logo",
-        width: 38,
-        height: 38,
-      },
+      { name: "Cross-platform apps" },
+      { name: "Mobile product flows" },
     ],
   },
   {
-    category: "Cloud & Infra",
-    emoji: "☁️",
+    category: "Cloud & Infrastructure",
+    emoji: "OPS",
     labelClass: "bg-sky-500/10 text-sky-400 border border-sky-500/20",
     skills: [
       {
@@ -184,13 +162,6 @@ export const skillGroups: SkillGroup[] = [
         height: 24,
       },
       {
-        name: "Docker",
-        src: "/docker.svg",
-        alt: "Docker logo",
-        width: 32,
-        height: 32,
-      },
-      {
         name: "Terraform",
         src: "/terraform.svg",
         alt: "Terraform logo",
@@ -198,12 +169,21 @@ export const skillGroups: SkillGroup[] = [
         height: 24,
       },
       {
-        name: "Digital Ocean",
+        name: "Docker",
+        src: "/docker.svg",
+        alt: "Docker logo",
+        width: 32,
+        height: 32,
+      },
+      {
+        name: "DigitalOcean",
         src: "/digital-ocean.svg",
-        alt: "Digital Ocean logo",
+        alt: "DigitalOcean logo",
         width: 24,
         height: 24,
       },
+      { name: "CI/CD" },
+      { name: "Deployment workflows" },
     ],
   },
 ];

@@ -21,7 +21,7 @@ const projectDeckCopy: Record<string, string> = {
   Claimence:
     "Coverage analysis for financial-lines claims, narrowing policy noise into decisions people can act on.",
   Brixa:
-    "Hotel ops assistant that answers guest questions with property context, so staff repeat themselves less.",
+    "AI hotel operations platform automating guest communication and booking workflows, helping increase conversions while reducing repetitive work.",
   "Grab & Eat":
     "Autonomous grocery checkout: scan, purchase, leave without turning the store into a queue.",
   "Multi Step Form":
@@ -50,7 +50,7 @@ const ProjectVisual = ({
 }) => (
   <div
     className={cn(
-      "relative min-h-48 overflow-hidden rounded-xl bg-zinc-900",
+      "min-h-48 relative overflow-hidden rounded-xl bg-zinc-900",
       className,
     )}
   >
@@ -64,7 +64,7 @@ const ProjectVisual = ({
       />
     ) : (
       <div
-        className="flex size-full min-h-48 items-center justify-center"
+        className="size-full min-h-48 flex items-center justify-center"
         style={{ background: getProjectGradient(project.title) }}
       >
         <span className="max-w-xs px-5 text-center text-3xl font-semibold text-white">
@@ -152,7 +152,7 @@ const ProjectStackCard = ({
             <h3 className="text-balance text-2xl font-semibold leading-tight sm:text-4xl">
               {project.title}
             </h3>
-            <p className="line-clamp-3 max-w-2xl text-pretty text-sm leading-7 text-zinc-300">
+            <p className="text-pretty line-clamp-3 max-w-2xl text-sm leading-7 text-zinc-300">
               {getProjectDeckCopy(project)}
             </p>
           </div>
@@ -180,7 +180,7 @@ export const ProjectStack = ({ projects }: { projects: Project[] }) => (
     baseScale={0.94}
     stackPosition="5%"
     scaleEndPosition="2%"
-    className="h-[56vh] max-h-[36rem] min-h-[30rem] overflow-x-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    className="h-[56vh] max-h-[36rem] min-h-[30rem] overflow-x-visible [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     innerClassName="scroll-stack-inner min-h-full px-0 pb-8 pt-0"
   >
     {projects.map((project, index) => (
