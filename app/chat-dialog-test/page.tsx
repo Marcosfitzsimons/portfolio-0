@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import ChatBot from "@/components/chat-bot";
+import PortfolioAgent from "@/components/portfolio-agent";
 
 export default function ChatDialogTestPage() {
   if (process.env.NODE_ENV === "production") {
@@ -13,7 +13,7 @@ export default function ChatDialogTestPage() {
         <p className="mb-6 text-sm text-zinc-400">
           Mobile chat dialog development fixture
         </p>
-        <ChatBot />
+        <PortfolioAgent />
         <div aria-hidden className="h-[100vh]" />
       </div>
     </main>

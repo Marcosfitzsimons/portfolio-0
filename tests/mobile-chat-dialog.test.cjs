@@ -4,7 +4,7 @@ const path = require("node:path");
 const { describe, it } = require("node:test");
 
 const chatBotSource = fs.readFileSync(
-  path.join(__dirname, "../components/chat-bot.tsx"),
+  path.join(__dirname, "../components/portfolio-agent.tsx"),
   "utf8",
 );
 

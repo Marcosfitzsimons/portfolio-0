@@ -1,4 +1,4 @@
-import ChatBot from "@/components/chat-bot";
+import PortfolioAgent from "@/components/portfolio-agent";
 import { ShinyIcon, SPARKLES_SVG } from "@/components/shiny-text";
 import StarBorder from "@/components/star-border";
 
@@ -32,6 +32,6 @@ export const CommandChatPanel = () => (
       </p>
     </div>
 
-    <ChatBot />
+    <PortfolioAgent />
   </StarBorder>
 );

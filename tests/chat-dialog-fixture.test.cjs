@@ -9,11 +9,11 @@ test("chat dialog fixture page is development-only and database independent", ()
   const source = fs.readFileSync(pagePath, "utf8");
 
   assert.match(source, /import\s+\{\s*notFound\s*\}\s+from\s+["']next\/navigation["'];?/);
-  assert.match(source, /import\s+ChatBot\s+from\s+["']@\/components\/chat-bot["'];?/);
+  assert.match(source, /import\s+PortfolioAgent\s+from\s+["']@\/components\/portfolio-agent["'];?/);
   assert.match(source, /process\.env\.NODE_ENV\s*===\s*["']production["']/);
   assert.match(source, /notFound\(\)/);
   assert.match(source, /Mobile chat dialog development fixture/);
-  assert.match(source, /<ChatBot\s*\/>/);
+  assert.match(source, /<PortfolioAgent\s*\/>/);
   assert.doesNotMatch(source, /prisma/i);
   assert.doesNotMatch(source, /getProjects/);
 });

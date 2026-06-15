@@ -231,9 +231,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 ## Custom Components
 
-### ChatBot Component
+### PortfolioAgent Component
 
-**Location**: `components/chat-bot.tsx`
+**Location**: `components/portfolio-agent.tsx`
 
 An interactive chatbot component that answers questions about the portfolio owner.
 
@@ -248,9 +248,9 @@ An interactive chatbot component that answers questions about the portfolio owne
 #### Usage
 
 ```tsx
-import ChatBot from "@/components/chat-bot"
+import PortfolioAgent from "@/components/portfolio-agent"
 
-<ChatBot />
+<PortfolioAgent />
 ```
 
 #### Dependencies
@@ -665,11 +665,11 @@ export default async function ExamplePage() {
 }
 ```
 
-### Using the ChatBot Component
+### Using the PortfolioAgent Component
 
 ```tsx
 // app/chat/page.tsx
-import ChatBot from "@/components/chat-bot"
+import PortfolioAgent from "@/components/portfolio-agent"
 
 export default function ChatPage() {
   return (
@@ -679,7 +679,7 @@ export default function ChatPage() {
       </h1>
       
       <div className="flex justify-center">
-        <ChatBot />
+        <PortfolioAgent />
       </div>
     </div>
   )
