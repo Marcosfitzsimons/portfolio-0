@@ -177,6 +177,36 @@ export function createPortfolioAgentRuntime(
       id: deps.generateId,
     });
 
+    // Terminal trace ownership guard. Exactly ONE of
+    // {answer.completed, request.cancelled, answer.failed} is ever emitted per
+    // run. Shared by the pre-stream abort handler below and the stream
+    // onFinish/onAbort/onError callbacks.
+    let terminalEmitted = false;
+
+    return await runTurnInner();
+
+    async function runTurnInner(): Promise<RunTurnResult> {
+      try {
+        return await runTurnFlow();
+      } catch (error) {
+        // Step 3 (pre-stream abort): if the request aborts during
+        // classify/retrieval/the deterministic specialist phase, the stream's
+        // onAbort never fires (no stream exists yet). Emit request.cancelled
+        // here under the shared guard, then rethrow. Non-abort pre-stream
+        // errors rethrow without a terminal event (no stream to fail; the route
+        // records run-status failure).
+        if (isAbortError(error) && !terminalEmitted) {
+          terminalEmitted = true;
+          await emitTrace({
+            type: "request.cancelled",
+            label: "Request cancelled",
+          });
+        }
+        throw error;
+      }
+    }
+
+    async function runTurnFlow(): Promise<RunTurnResult> {
     // Step 1: over-length guardrail.
     if (currentMessageText.length > portfolioAgentConfig.maxMessageCharacters) {
       await emitTrace({ type: "request.received", label: "Understanding request" });
@@ -361,9 +391,6 @@ export function createPortfolioAgentRuntime(
     // Step 14: synthesis.started.
     await emitTrace({ type: "synthesis.started", label: "Preparing answer" });
 
-    // Step 18: terminal trace ownership guard.
-    let terminalEmitted = false;
-
     const tools = useTools
       ? createSpecialistTools({
           budget,
@@ -403,6 +430,21 @@ export function createPortfolioAgentRuntime(
         terminalEmitted = true;
         await emitTrace({ type: "request.cancelled", label: "Request cancelled" });
       },
+      onError: async ({ error }) => {
+        // streamText calls neither onFinish nor onAbort on a non-abort stream
+        // error (provider error / error chunk). Without this, terminalEmitted
+        // stays false and NO terminal trace is emitted. Aborts are handled by
+        // onAbort, so defer to that path if this is an abort.
+        if (isAbortError(error)) return;
+        // Visitor-safe: never leak the provider error into the public trace.
+        console.error("portfolio-agent: orchestrator stream error", error);
+        if (terminalEmitted) return;
+        terminalEmitted = true;
+        await emitTrace({
+          type: "answer.failed",
+          label: "Answer could not be completed",
+        });
+      },
     });
 
     return {
@@ -412,6 +454,7 @@ export function createPortfolioAgentRuntime(
       orchestratorModel: orchestratorModelName,
       usage,
     };
+    }
   }
 
   return { runTurn };

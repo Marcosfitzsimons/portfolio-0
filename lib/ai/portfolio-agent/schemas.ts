@@ -100,6 +100,7 @@ export const publicTraceEventSchema = z.object({
     "specialist.failed",
     "synthesis.started",
     "answer.completed",
+    "answer.failed",
     "request.cancelled",
   ]),
   label: z.string().min(1),

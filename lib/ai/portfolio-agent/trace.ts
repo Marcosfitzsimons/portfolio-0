@@ -36,7 +36,14 @@ export function createTracePublisher({
       write({ type: "data-trace", id: event.id, data: event });
     }
     sequence += 1;
-    await persist({ runId, sequence, event });
+    try {
+      await persist({ runId, sequence, event });
+    } catch (error) {
+      // Trace persistence is best-effort: a transient DB write failure must
+      // never reject the turn (and must not break the SDK flush when called
+      // from inside onFinish/onError/onAbort).
+      console.error("portfolio-agent: trace persistence failed", error);
+    }
     return event;
   };
 }

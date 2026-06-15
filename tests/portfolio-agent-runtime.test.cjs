@@ -394,6 +394,53 @@ describe("portfolio agent runtime", () => {
     assert.equal(terminals[0], "request.cancelled");
   });
 
+  it("stream error emits a terminal answer.failed and not a success terminal", async () => {
+    // doStream resolves, but the stream emits an `{type:"error"}` chunk before
+    // any finish. streamText surfaces this through onError (NOT onFinish /
+    // onAbort), which is the exact reliability gap we are guarding against.
+    const orchestratorModel = new MockLanguageModelV3({
+      doStream: async () => ({
+        stream: simulateReadableStream({
+          chunks: [
+            { type: "text-start", id: "t" },
+            { type: "error", error: new Error("provider exploded") },
+          ],
+        }),
+      }),
+    });
+
+    const { writer, deps, traceTypes } = makeHarness({
+      classify: async () => profile({ lenses: ["product"], confidence: 0.9 }),
+      orchestratorModel,
+      escalatedOrchestratorModel: orchestratorModel,
+    });
+    const runtime = createPortfolioAgentRuntime(deps);
+    const { input } = baseInput("Tell me about your work");
+    input.writer = writer;
+
+    const result = await runtime.runTurn(input);
+    // Draining the returned UI message stream is what surfaces the error chunk
+    // and triggers streamText's onError handler.
+    await drain(result.orchestratorStream).catch(() => {});
+
+    assert.ok(
+      traceTypes.includes("answer.failed"),
+      "answer.failed terminal emitted on stream error",
+    );
+    assert.ok(
+      !traceTypes.includes("answer.completed"),
+      "answer.completed must NOT be emitted on stream error",
+    );
+    const terminals = traceTypes.filter(
+      (t) =>
+        t === "answer.completed" ||
+        t === "answer.failed" ||
+        t === "request.cancelled",
+    );
+    assert.equal(terminals.length, 1, "exactly one terminal event");
+    assert.equal(terminals[0], "answer.failed");
+  });
+
   it("trace order starts with request.received and ends with answer.completed", async () => {
     const { writer, deps, traceTypes } = makeHarness({
       classify: async () => profile({ lenses: ["product"], confidence: 0.9 }),
