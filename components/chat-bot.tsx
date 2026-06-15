@@ -110,6 +110,7 @@ const SUGGESTIONS = [
 const ChatBot = () => {
   const messagesScrollAreaRef = React.useRef<HTMLDivElement | null>(null);
   const inputWrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const collapsedTriggerRef = React.useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [showIntro, setShowIntro] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -195,6 +196,10 @@ const ChatBot = () => {
       e.preventDefault();
       setIsOpen(true);
     }
+  };
+  const handleMobileCloseAutoFocus = (event: Event) => {
+    event.preventDefault();
+    collapsedTriggerRef.current?.focus();
   };
 
   const messagesList = (
@@ -355,6 +360,7 @@ const ChatBot = () => {
     <div className="relative w-full after:pointer-events-none after:absolute after:inset-px after:rounded-2xl after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
       <section className="flex flex-col rounded-2xl border border-white/10 bg-background/60 p-0 backdrop-blur-md transition-all duration-300 ease-out">
         <div
+          ref={collapsedTriggerRef}
           role="button"
           aria-label="Open chat"
           tabIndex={0}
@@ -474,7 +480,11 @@ const ChatBot = () => {
                     className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
                   />
                 </DialogPrimitive.Overlay>
-                <DialogPrimitive.Content asChild forceMount>
+                <DialogPrimitive.Content
+                  asChild
+                  forceMount
+                  onCloseAutoFocus={handleMobileCloseAutoFocus}
+                >
                   <motion.div
                     data-testid="mobile-chat-dialog"
                     initial={

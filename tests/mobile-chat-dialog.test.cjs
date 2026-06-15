@@ -31,4 +31,33 @@ describe("mobile chat dialog source contract", () => {
     assert.match(chatBotSource, /data-testid="desktop-chat-dialog"/);
     assert.match(chatBotSource, /aria-label="Open chat"/);
   });
+
+  it("restores focus to the collapsed trigger when the mobile dialog closes", () => {
+    assert.match(
+      chatBotSource,
+      /const collapsedTriggerRef = React\.useRef<HTMLDivElement \| null>\(null\)/,
+    );
+    assert.match(chatBotSource, /ref=\{collapsedTriggerRef\}/);
+    assert.match(
+      chatBotSource,
+      /const handleMobileCloseAutoFocus = \(event: Event\) => \{[\s\S]*?event\.preventDefault\(\);[\s\S]*?collapsedTriggerRef\.current\?\.focus\(\);[\s\S]*?\};/,
+    );
+    assert.equal(
+      chatBotSource.match(
+        /onCloseAutoFocus=\{handleMobileCloseAutoFocus\}/g,
+      )?.length,
+      1,
+    );
+    const desktopDialogIndex = chatBotSource.indexOf(
+      'data-testid="desktop-chat-dialog"',
+    );
+    const closeAutoFocusIndex = chatBotSource.indexOf(
+      "onCloseAutoFocus={handleMobileCloseAutoFocus}",
+    );
+    const mobileDialogIndex = chatBotSource.indexOf(
+      'data-testid="mobile-chat-dialog"',
+    );
+    assert.ok(desktopDialogIndex < closeAutoFocusIndex);
+    assert.ok(closeAutoFocusIndex < mobileDialogIndex);
+  });
 });
