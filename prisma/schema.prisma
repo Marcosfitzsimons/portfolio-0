@@ -27,3 +27,79 @@ model Project {
   year          String?
   showcaseOrder Int      @default(100)
 }
+
+model PortfolioAgentConversation {
+  id          String              @id
+  messages    Json                @default("[]")
+  activeRunId String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  expiresAt   DateTime
+  runs        PortfolioAgentRun[]
+
+  @@index([expiresAt])
+}
+
+model PortfolioAgentRun {
+  id                String                        @id
+  conversationId    String
+  conversation      PortfolioAgentConversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  status            String
+  routingProfile    Json?
+  routingMode       String?
+  orchestratorModel String?
+  usage             Json?
+  errorCode         String?
+  createdAt         DateTime                      @default(now())
+  completedAt       DateTime?
+  durationMs        Int?
+  specialistRuns    PortfolioAgentSpecialistRun[]
+  traceEvents       PortfolioAgentTraceEvent[]
+
+  @@index([conversationId, createdAt])
+}
+
+model PortfolioAgentSpecialistRun {
+  id          String            @id @default(cuid())
+  runId       String
+  run         PortfolioAgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  specialist  String
+  status      String
+  model       String
+  sourceIds   String[]
+  evidence    Json?
+  errorCode   String?
+  createdAt   DateTime          @default(now())
+  completedAt DateTime?
+  durationMs  Int?
+
+  @@unique([runId, specialist])
+  @@index([runId])
+}
+
+model PortfolioAgentTraceEvent {
+  id           String            @id
+  runId        String
+  run          PortfolioAgentRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  sequence     Int
+  type         String
+  publicLabel  String
+  publicData   Json?
+  sourceLabels String[]
+  durationMs   Int?
+  createdAt    DateTime          @default(now())
+
+  @@unique([runId, sequence])
+  @@index([runId, createdAt])
+}
+
+model PortfolioAgentRateLimitBucket {
+  id          String   @id
+  keyHash     String
+  scope       String
+  windowStart DateTime
+  count       Int      @default(0)
+  expiresAt   DateTime
+
+  @@index([expiresAt])
+}
