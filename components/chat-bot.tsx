@@ -6,16 +6,8 @@ import { ScrollArea } from "./ui/scroll-area";
 import { User, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import {
-  Drawer,
-  DrawerHeader,
-  DrawerContent,
-  DrawerFooter,
-  DrawerClose,
-  DrawerTitle,
-  DrawerDescription,
-} from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useVisualViewport } from "@/hooks/use-visual-viewport";
 import {
   PromptInput,
   PromptInputBody,
@@ -34,7 +26,7 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ShinyText, { ShinyIcon, SPARKLES_SVG } from "./shiny-text";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const AI_LABEL = "Marcos AI";
 const INTRO_TEXT =
@@ -118,9 +110,12 @@ const SUGGESTIONS = [
 const ChatBot = () => {
   const messagesScrollAreaRef = React.useRef<HTMLDivElement | null>(null);
   const inputWrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const collapsedTriggerRef = React.useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [showIntro, setShowIntro] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const mobileViewport = useVisualViewport();
+  const prefersReducedMotion = useReducedMotion();
 
   const { messages, status, sendMessage, stop } = useChat({
     onError: () => {
@@ -172,7 +167,7 @@ const ChatBot = () => {
   const handleSuggestion = (suggestion: string) => {
     if (isLoading) return;
     setIsOpen(true);
-    // Wait for the dialog/drawer to mount before reaching into the textarea.
+    // Wait for the dialog to mount before reaching into the textarea.
     setTimeout(() => {
       const textarea = inputWrapperRef.current?.querySelector("textarea");
       if (!textarea) return;
@@ -201,6 +196,10 @@ const ChatBot = () => {
       e.preventDefault();
       setIsOpen(true);
     }
+  };
+  const handleMobileCloseAutoFocus = (event: Event) => {
+    event.preventDefault();
+    collapsedTriggerRef.current?.focus({ preventScroll: true });
   };
 
   const messagesList = (
@@ -361,7 +360,9 @@ const ChatBot = () => {
     <div className="relative w-full after:pointer-events-none after:absolute after:inset-px after:rounded-2xl after:shadow-highlight after:shadow-gray-300/20 after:transition-colors">
       <section className="flex flex-col rounded-2xl border border-white/10 bg-background/60 p-0 backdrop-blur-md transition-all duration-300 ease-out">
         <div
+          ref={collapsedTriggerRef}
           role="button"
+          aria-label="Open chat"
           tabIndex={0}
           onClick={handleOpenCollapsed}
           onKeyDown={handleKeyDownCollapsed}
@@ -399,6 +400,7 @@ const ChatBot = () => {
                 </DialogPrimitive.Overlay>
                 <DialogPrimitive.Content asChild forceMount>
                   <motion.div
+                    data-testid="desktop-chat-dialog"
                     variants={SHEET_VARIANTS}
                     initial="hidden"
                     animate="visible"
@@ -463,52 +465,95 @@ const ChatBot = () => {
           </AnimatePresence>
         </DialogPrimitive.Root>
       ) : (
-        <Drawer
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          shouldScaleBackground={false}
-        >
-          <DrawerContent
-            className="flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden rounded-none border-0 bg-background/95 backdrop-blur-md [&>div:first-child]:hidden"
-          >
-            <DrawerHeader className="mt-2 flex shrink-0 flex-row items-center justify-between border-b border-white/10 px-4 py-3 text-left">
-              <div className="flex items-center gap-2 text-sm text-white">
-                <ShinyIcon
-                  svg={SPARKLES_SVG}
-                  size={20}
-                  speed={2.4}
-                  color="#9ca3af"
-                  shineColor="#ffffff"
-                />
-                <DrawerTitle className="sr-only">{AI_LABEL}</DrawerTitle>
-              </div>
-              <DrawerDescription className="sr-only">
-                {DIALOG_DESCRIPTION}
-              </DrawerDescription>
-              <DrawerClose
-                aria-label="Close chat"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
-              >
-                <X className="h-4 w-4" />
-              </DrawerClose>
-            </DrawerHeader>
+        <DialogPrimitive.Root open={isOpen} onOpenChange={setIsOpen}>
+          <AnimatePresence>
+            {isOpen && (
+              <DialogPrimitive.Portal forceMount>
+                <DialogPrimitive.Overlay asChild forceMount>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: prefersReducedMotion ? 0 : 0.25,
+                    }}
+                    className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+                  />
+                </DialogPrimitive.Overlay>
+                <DialogPrimitive.Content
+                  asChild
+                  forceMount
+                  onCloseAutoFocus={handleMobileCloseAutoFocus}
+                >
+                  <motion.div
+                    data-testid="mobile-chat-dialog"
+                    initial={
+                      prefersReducedMotion ? false : { y: "100%" }
+                    }
+                    animate={{ y: 0 }}
+                    exit={{ y: prefersReducedMotion ? 0 : "100%" }}
+                    transition={
+                      prefersReducedMotion
+                        ? { duration: 0 }
+                        : {
+                            duration: 0.45,
+                            ease: [0.22, 1, 0.36, 1],
+                          }
+                    }
+                    style={{
+                      height: mobileViewport.height
+                        ? `${mobileViewport.height}px`
+                        : "100dvh",
+                      top: mobileViewport.offsetTop
+                        ? `${mobileViewport.offsetTop}px`
+                        : 0,
+                    }}
+                    className="fixed inset-x-0 z-50 flex flex-col overflow-hidden border-0 bg-background/95 backdrop-blur-md"
+                  >
+                    <header className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))]">
+                      <div className="flex items-center gap-2 text-sm text-white">
+                        <ShinyIcon
+                          svg={SPARKLES_SVG}
+                          size={20}
+                          speed={2.4}
+                          color="#9ca3af"
+                          shineColor="#ffffff"
+                        />
+                        <DialogPrimitive.Title className="sr-only">
+                          {AI_LABEL}
+                        </DialogPrimitive.Title>
+                      </div>
+                      <DialogPrimitive.Description className="sr-only">
+                        {DIALOG_DESCRIPTION}
+                      </DialogPrimitive.Description>
+                      <DialogPrimitive.Close
+                        aria-label="Close chat"
+                        className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+                      >
+                        <X className="h-4 w-4" />
+                      </DialogPrimitive.Close>
+                    </header>
 
-            <div className="relative flex min-h-0 flex-1 flex-col px-4 pt-3">
-              <ScrollArea
-                ref={messagesScrollAreaRef}
-                className="h-full w-full pr-2"
-              >
-                {messagesList}
-              </ScrollArea>
-              {introCallout}
-            </div>
+                    <div className="relative flex min-h-0 flex-1 flex-col px-4 pt-3">
+                      <ScrollArea
+                        ref={messagesScrollAreaRef}
+                        className="h-full w-full pr-2"
+                      >
+                        {messagesList}
+                      </ScrollArea>
+                      {introCallout}
+                    </div>
 
-            <DrawerFooter className="shrink-0 gap-3 border-t border-white/10 p-4 pt-4">
-              {suggestionsCarousel}
-              {inputArea}
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+                    <footer className="flex shrink-0 flex-col gap-3 border-t border-white/10 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4">
+                      {suggestionsCarousel}
+                      {inputArea}
+                    </footer>
+                  </motion.div>
+                </DialogPrimitive.Content>
+              </DialogPrimitive.Portal>
+            )}
+          </AnimatePresence>
+        </DialogPrimitive.Root>
       )}
     </div>
   );
