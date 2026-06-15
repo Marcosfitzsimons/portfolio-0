@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test tests/*.test.cjs"
+    "test": "node --test tests/*.test.cjs",
+    "typecheck": "tsc --noEmit --pretty false",
+    "eval:agent-routing": "ts-node --compiler-options {\"module\":\"CommonJS\"} scripts/evaluate-portfolio-agent-routing.ts",
+    "prisma:validate": "prisma validate"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.2",
