@@ -32,15 +32,19 @@ describe("mobile chat dialog source contract", () => {
     assert.match(chatBotSource, /aria-label="Open chat"/);
   });
 
-  it("restores focus to the collapsed trigger when the mobile dialog closes", () => {
+  it("restores focus to the collapsed trigger without scrolling the page when the mobile dialog closes", () => {
     assert.match(
       chatBotSource,
       /const collapsedTriggerRef = React\.useRef<HTMLDivElement \| null>\(null\)/,
     );
     assert.match(chatBotSource, /ref=\{collapsedTriggerRef\}/);
+    assert.doesNotMatch(
+      chatBotSource,
+      /collapsedTriggerRef\.current\?\.focus\(\);/,
+    );
     assert.match(
       chatBotSource,
-      /const handleMobileCloseAutoFocus = \(event: Event\) => \{[\s\S]*?event\.preventDefault\(\);[\s\S]*?collapsedTriggerRef\.current\?\.focus\(\);[\s\S]*?\};/,
+      /const handleMobileCloseAutoFocus = \(event: Event\) => \{[\s\S]*?event\.preventDefault\(\);[\s\S]*?collapsedTriggerRef\.current\?\.focus\(\{\s*preventScroll:\s*true\s*\}\);[\s\S]*?\};/,
     );
     assert.equal(
       chatBotSource.match(

@@ -199,7 +199,7 @@ const ChatBot = () => {
   };
   const handleMobileCloseAutoFocus = (event: Event) => {
     event.preventDefault();
-    collapsedTriggerRef.current?.focus();
+    collapsedTriggerRef.current?.focus({ preventScroll: true });
   };
 
   const messagesList = (
