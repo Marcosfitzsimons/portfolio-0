@@ -45,7 +45,7 @@ export const portfolioAgentConfig = {
   ),
   specialistTimeoutMs: envNumber(
     "PORTFOLIO_AGENT_SPECIALIST_TIMEOUT_MS",
-    4500,
+    10000,
   ),
   maxMessageCharacters: envNumber(
     "PORTFOLIO_AGENT_MAX_MESSAGE_CHARACTERS",
