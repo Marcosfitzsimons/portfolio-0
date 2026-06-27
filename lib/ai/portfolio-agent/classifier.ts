@@ -127,6 +127,7 @@ export async function classifyPortfolioRequest({
     return routingProfileSchema.parse(output);
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") throw error;
+    console.error("portfolio-agent: classifier failed", error);
     return safeAbstentionProfile;
   }
 }
