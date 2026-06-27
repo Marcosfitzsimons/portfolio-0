@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   title: "Single project",
 };
 
+const projectDetailCopy: Record<string, string> = {
+  Brixa:
+    "AI hotel operations platform automating guest communication and booking workflows, helping increase conversions while reducing repetitive operational work.",
+};
+
+const getProjectDescription = (project: Project) =>
+  projectDetailCopy[project.title] ?? project.description;
+
 export default async function SingleWorkPage({
   params,
 }: {
@@ -59,7 +67,9 @@ export default async function SingleWorkPage({
           <header className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-normal text-zinc-500">
-                <span>{project.isPersonal ? "Exploration" : "Client Work"}</span>
+                <span>
+                  {project.isPersonal ? "Exploration" : "Client Work"}
+                </span>
                 <span aria-hidden="true">/</span>
                 <span>{project.year ?? project.date}</span>
                 {project.status && (
@@ -72,8 +82,8 @@ export default async function SingleWorkPage({
               <h1 className="text-balance text-4xl font-semibold leading-tight sm:text-6xl">
                 {project.title}
               </h1>
-              <p className="max-w-3xl text-pretty text-sm leading-7 text-zinc-400 sm:text-base">
-                {project.description}
+              <p className="text-pretty max-w-3xl text-sm leading-7 text-zinc-400 sm:text-base">
+                {getProjectDescription(project)}
               </p>
             </div>
 

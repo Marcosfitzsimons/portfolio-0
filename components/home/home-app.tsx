@@ -15,7 +15,7 @@ type HomeAppProps = {
 };
 
 const sidebarCopy =
-  "TypeScript developer building web, mobile, cloud, and AI-powered systems for real teams.";
+  "Building production AI systems and full-stack software across interfaces, backend services, and infrastructure.";
 
 const combineProjects = (
   workProjects: Project[],
@@ -49,23 +49,26 @@ export const HomeApp = ({ workProjects, personalProjects }: HomeAppProps) => {
                 </SectionLabel>
                 <div>
                   <h1 className="text-balance text-4xl font-semibold leading-tight">
-                    Full-stack products, from interface to infrastructure.
+                    <span className="block">AI product builder.</span>
+                    <span className="block">Full-stack developer.</span>
                   </h1>
-                  <p className="mt-4 text-pretty text-sm leading-6 text-zinc-400">
+                  <p className="text-pretty mt-4 text-sm leading-6 text-zinc-400">
                     {sidebarCopy}
                   </p>
                 </div>
                 <div className="flex flex-col">
-                  {["4+ years shipping", "Web / Mobile", "AI / Cloud"].map(
-                    (item) => (
-                      <div
-                        key={item}
-                        className="border-t border-white/10 px-1 py-3 text-xs uppercase tracking-normal text-zinc-500"
-                      >
-                        {item}
-                      </div>
-                    ),
-                  )}
+                  {[
+                    "4+ years shipping software",
+                    "Production AI systems",
+                    "Web / Mobile / Cloud",
+                  ].map((item) => (
+                    <div
+                      key={item}
+                      className="border-t border-white/10 px-1 py-3 text-xs uppercase tracking-normal text-zinc-500"
+                    >
+                      {item}
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="mt-5 border-b border-white/10 pb-6">
@@ -86,10 +89,10 @@ export const HomeApp = ({ workProjects, personalProjects }: HomeAppProps) => {
                   <SectionLabel icon={<FolderOpenDot className="size-3.5" />}>
                     Works
                   </SectionLabel>
-                  <h2 className="mt-4 max-w-2xl text-balance text-4xl font-semibold leading-tight">
+                  <h2 className="text-balance mt-4 max-w-2xl text-4xl font-semibold leading-tight">
                     Selected projects.
                   </h2>
-                  <p className="mt-3 max-w-xl text-pretty text-sm leading-6 text-zinc-400">
+                  <p className="text-pretty mt-3 max-w-xl text-sm leading-6 text-zinc-400">
                     A short, scrollable look at the work worth opening first.
                   </p>
                 </div>

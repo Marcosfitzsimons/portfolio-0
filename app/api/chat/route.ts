@@ -1,92 +1,171 @@
 import {
+  consumeStream,
+  convertToModelMessages,
+  createIdGenerator,
+  generateId,
   createUIMessageStream,
   createUIMessageStreamResponse,
-  streamText,
-  type UIMessage,
+  validateUIMessages,
+  type Tool,
 } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
-import { findRelevantContent } from "@/lib/ai/rag";
+import { NextResponse } from "next/server";
 import {
-  buildChatSystemPrompt,
-  getChatScopeDecision,
-} from "@/lib/ai/chat-policy";
+  beginRun,
+  ConversationBusyError,
+  loadConversationMessages,
+  finishRun,
+} from "@/lib/ai/portfolio-agent/persistence";
+import { checkPortfolioAgentRateLimits } from "@/lib/ai/portfolio-agent/rate-limit";
+import { createPortfolioAgentRuntime } from "@/lib/ai/portfolio-agent/runtime";
+import {
+  chatRequestSchema,
+  publicTraceEventSchema,
+  type PortfolioAgentMessage,
+} from "@/lib/ai/portfolio-agent/schemas";
+import { specialistValidationTools } from "@/lib/ai/portfolio-agent/specialists";
 
-// Configure OpenAI with custom env var name
-const openai = createOpenAI({
-  apiKey: process.env.OPEN_AI_API_KEY,
-});
-
-// Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-type Message = {
-  role: "user" | "assistant" | "system";
-  content: string;
-};
+const runtime = createPortfolioAgentRuntime();
+const generateMessageId = createIdGenerator({ prefix: "msg", size: 16 });
 
-// Helper to extract text from UIMessage parts
-function getMessageText(message: UIMessage): string {
-  if (Array.isArray(message.parts)) {
-    return message.parts
-      .filter(
-        (part): part is { type: "text"; text: string } => part.type === "text",
-      )
-      .map((part) => part.text)
-      .join("");
-  }
-  return "";
-}
-
-// Convert UIMessage to simple message format for streamText
-function convertToMessages(messages: UIMessage[]): Message[] {
-  return messages.map((message) => ({
-    role: message.role as "user" | "assistant",
-    content: getMessageText(message),
-  }));
-}
-
-function createGuardrailResponse(message: string): Response {
-  const stream = createUIMessageStream({
-    execute: ({ writer }) => {
-      const id = "scope-guardrail";
-      writer.write({ type: "text-start", id });
-      writer.write({ type: "text-delta", id, delta: message });
-      writer.write({ type: "text-end", id });
-    },
-  });
-
-  return createUIMessageStreamResponse({ stream });
+export async function GET(req: Request) {
+  const id = new URL(req.url).searchParams.get("id");
+  if (!id) return NextResponse.json({ messages: [] });
+  const messages = await loadConversationMessages(id);
+  return NextResponse.json({ messages });
 }
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json();
-
-  // Get the last user message for context retrieval
-  const lastUserMessage = messages.findLast((m) => m.role === "user");
-  const query = lastUserMessage ? getMessageText(lastUserMessage) : "";
-
-  // Skip RAG if query is empty
-  if (!query.trim()) {
-    return new Response("No query provided", { status: 400 });
+  const parsed = chatRequestSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid chat request" }, { status: 400 });
   }
 
-  const scopeDecision = getChatScopeDecision(query);
-  if (!scopeDecision.allowed) {
-    return createGuardrailResponse(scopeDecision.message ?? "");
-  }
-
-  // Find relevant context from knowledge base
-  const relevantChunks = await findRelevantContent(query, 3);
-  const context = relevantChunks.join("\n\n---\n\n");
-
-  // Convert messages to simple format for streamText
-  const convertedMessages = convertToMessages(messages);
-
-  const result = streamText({
-    model: openai("gpt-4o-mini"),
-    system: buildChatSystemPrompt(context),
-    messages: convertedMessages,
+  const previousMessages = await loadConversationMessages(parsed.data.id);
+  const validationTools = specialistValidationTools as Record<string, Tool<unknown, unknown>>;
+  const messages = await validateUIMessages<PortfolioAgentMessage>({
+    messages: [...previousMessages.slice(-7), parsed.data.message],
+    dataSchemas: { trace: publicTraceEventSchema },
+    tools: validationTools,
+  });
+  const modelMessages = await convertToModelMessages(messages, {
+    tools: validationTools,
+    ignoreIncompleteToolCalls: true,
   });
 
-  return result.toUIMessageStreamResponse();
+  if (
+    !(await checkPortfolioAgentRateLimits({
+      headers: req.headers,
+      conversationId: parsed.data.id,
+    }))
+  ) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  const runId = generateId();
+  try {
+    await beginRun({ conversationId: parsed.data.id, runId });
+  } catch (error) {
+    if (error instanceof ConversationBusyError) {
+      return NextResponse.json(
+        { error: "A request is already running" },
+        { status: 409 },
+      );
+    }
+    throw error;
+  }
+
+  let orchestratorModel = "";
+  let usage: Record<string, unknown> = {};
+  const startedAt = Date.now();
+  let terminalPersisted = false;
+
+  const persistTerminal = async ({
+    completedMessages,
+    status,
+    errorCode,
+  }: {
+    completedMessages: PortfolioAgentMessage[];
+    status: "completed" | "failed" | "cancelled";
+    errorCode?: string;
+  }) => {
+    if (terminalPersisted) return;
+    terminalPersisted = true;
+    await finishRun({
+      conversationId: parsed.data.id,
+      runId,
+      messages: completedMessages,
+      status,
+      orchestratorModel,
+      usage,
+      errorCode,
+      durationMs: Date.now() - startedAt,
+    });
+  };
+
+  try {
+    const stream = createUIMessageStream<PortfolioAgentMessage>({
+      originalMessages: messages,
+      generateId: generateMessageId,
+      execute: async ({ writer }) => {
+        const result = await runtime.runTurn({
+          runId,
+          conversationId: parsed.data.id,
+          currentMessage: parsed.data.message as PortfolioAgentMessage,
+          previousMessages,
+          modelMessages,
+          requestHeaders: req.headers,
+          abortSignal: req.signal,
+          writer,
+        });
+
+        orchestratorModel = result.orchestratorModel ?? "";
+        usage = result.usage;
+
+        if (result.directText != null) {
+          const textId = generateMessageId();
+          writer.write({ type: "text-start", id: textId });
+          writer.write({ type: "text-delta", id: textId, delta: result.directText });
+          writer.write({ type: "text-end", id: textId });
+          return;
+        }
+
+        if (result.orchestratorStream) {
+          writer.merge(result.orchestratorStream);
+        }
+      },
+      onFinish: async ({ messages: completedMessages, isAborted }) => {
+        await persistTerminal({
+          completedMessages,
+          status: isAborted ? "cancelled" : "completed",
+        });
+      },
+      onError: error => {
+        void persistTerminal({
+          completedMessages: messages,
+          status: "failed",
+          errorCode: "STREAM_ERROR",
+        });
+        console.error("Portfolio Agent stream failed", error);
+        return "The Portfolio Agent could not complete this request.";
+      },
+    });
+
+    return createUIMessageStreamResponse({
+      stream,
+      consumeSseStream: consumeStream,
+    });
+  } catch (error) {
+    await persistTerminal({
+      completedMessages: messages,
+      status: "failed",
+      errorCode: "REQUEST_SETUP_ERROR",
+    });
+    console.error("Portfolio Agent request setup failed", error);
+    return NextResponse.json(
+      { error: "The Portfolio Agent could not start this request" },
+      { status: 500 },
+    );
+  }
 }

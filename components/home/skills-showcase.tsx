@@ -1,10 +1,20 @@
 import LogoLoop from "@/components/logo-loop";
-import { skillGroups } from "@/lib/skills-source";
+import { skillGroups, type Skill } from "@/lib/skills-source";
 import { cn } from "@/lib/utils";
 import { surfaceText } from "./section-label";
 
+type LogoSkill = Skill & {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
+const hasLogo = (skill: Skill): skill is LogoSkill =>
+  Boolean(skill.src && skill.alt && skill.width && skill.height);
+
 const skillLogoItems = skillGroups.flatMap((group) =>
-  group.skills.map((skill) => ({
+  group.skills.filter(hasLogo).map((skill) => ({
     src: skill.src,
     alt: skill.alt,
     title: skill.name,
@@ -14,23 +24,19 @@ const skillLogoItems = skillGroups.flatMap((group) =>
 );
 
 const skillCategoryMeta = {
-  Frontend: {
-    className:
-      "border-blue-300/15 bg-blue-300/10 text-blue-100 shadow-blue-500/10",
-  },
-  Backend: {
-    className:
-      "border-emerald-300/15 bg-emerald-300/10 text-emerald-100 shadow-emerald-500/10",
-  },
-  Databases: {
-    className:
-      "border-amber-300/15 bg-amber-300/10 text-amber-100 shadow-amber-500/10",
-  },
-  "AI & Automation": {
+  "AI Product Systems": {
     className:
       "border-violet-300/15 bg-violet-300/10 text-violet-100 shadow-violet-500/10",
   },
-  "Cloud & Infra": {
+  "Full-Stack Development": {
+    className:
+      "border-blue-300/15 bg-blue-300/10 text-blue-100 shadow-blue-500/10",
+  },
+  "Mobile Development": {
+    className:
+      "border-emerald-300/15 bg-emerald-300/10 text-emerald-100 shadow-emerald-500/10",
+  },
+  "Cloud & Infrastructure": {
     className:
       "border-cyan-300/15 bg-cyan-300/10 text-cyan-100 shadow-cyan-500/10",
   },
@@ -41,7 +47,7 @@ export const SkillList = () => (
     {skillGroups.map((group) => {
       const category =
         skillCategoryMeta[group.category as keyof typeof skillCategoryMeta] ??
-        skillCategoryMeta.Frontend;
+        skillCategoryMeta["Full-Stack Development"];
 
       return (
         <div

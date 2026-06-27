@@ -57,7 +57,7 @@ const projectCopyUpdates: Record<
 > = {
   Brixa: {
     description:
-      "Production AI-powered hotel operations platform with tool-using agents for guest Q&A, booking and reservation workflows, guest communication, and follow-ups.",
+      "AI hotel operations platform automating guest communication and booking workflows, helping increase conversions while reducing repetitive operational work.",
     stack: "OpenAI API, React.js, Node.js, PostgreSQL, Microservices",
     date: "2025 - Present",
     year: "2025 - Present",

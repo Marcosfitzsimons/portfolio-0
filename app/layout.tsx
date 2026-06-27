@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     default: "Portfolio - Marcos Fitzsimons",
   },
   description:
-    "Explore Marcos Fitzsimons' portfolio of full-stack, AI, cloud, and product work.",
+    "Portfolio of Marcos Fitzsimons, an AI product builder and full-stack developer building production AI systems, web, mobile, and cloud-backed software.",
   metadataBase: new URL("https://www.marcosfitzsimons.com.ar"),
 };
 

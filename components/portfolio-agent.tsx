@@ -2,6 +2,9 @@
 
 import React from "react";
 import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { nanoid } from "nanoid";
+import type { PortfolioAgentMessage } from "@/lib/ai/portfolio-agent/schemas";
 import { ScrollArea } from "./ui/scroll-area";
 import { User, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -107,7 +110,17 @@ const SUGGESTIONS = [
   },
 ];
 
-const ChatBot = () => {
+const CONVERSATION_STORAGE_KEY = "portfolio-agent-conversation-id";
+
+function getStoredConversationId(): string {
+  const existing = window.localStorage.getItem(CONVERSATION_STORAGE_KEY);
+  if (existing) return existing;
+  const created = nanoid();
+  window.localStorage.setItem(CONVERSATION_STORAGE_KEY, created);
+  return created;
+}
+
+const PortfolioAgent = () => {
   const messagesScrollAreaRef = React.useRef<HTMLDivElement | null>(null);
   const inputWrapperRef = React.useRef<HTMLDivElement | null>(null);
   const collapsedTriggerRef = React.useRef<HTMLDivElement | null>(null);
@@ -117,13 +130,62 @@ const ChatBot = () => {
   const mobileViewport = useVisualViewport();
   const prefersReducedMotion = useReducedMotion();
 
-  const { messages, status, sendMessage, stop } = useChat({
+  const [conversationId, setConversationId] = React.useState<string | null>(null);
+  const [conversationReady, setConversationReady] = React.useState(false);
+
+  React.useEffect(() => {
+    setConversationId(getStoredConversationId());
+  }, []);
+
+  const transport = React.useMemo(
+    () =>
+      new DefaultChatTransport<PortfolioAgentMessage>({
+        api: "/api/chat",
+        prepareSendMessagesRequest({ messages, id }) {
+          return {
+            body: {
+              id,
+              message: messages[messages.length - 1],
+            },
+          };
+        },
+      }),
+    [],
+  );
+
+  const { messages, status, sendMessage, stop, setMessages } = useChat<PortfolioAgentMessage>({
+    id: conversationId ?? "portfolio-agent-pending",
+    transport,
     onError: () => {
       toast.error("Something went wrong. Please try again later.");
     },
   });
 
   const isLoading = status === "streaming" || status === "submitted";
+
+  React.useEffect(() => {
+    if (!conversationId) return;
+    const controller = new AbortController();
+    setConversationReady(false);
+
+    fetch(`/api/chat?id=${encodeURIComponent(conversationId)}`, {
+      signal: controller.signal,
+    })
+      .then(response => (response.ok ? response.json() : { messages: [] }))
+      .then(({ messages: storedMessages }) => setMessages(storedMessages))
+      .catch(error => {
+        if (error.name !== "AbortError") {
+          toast.error("The previous conversation could not be restored.");
+        }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setConversationReady(true);
+      });
+
+    return () => controller.abort();
+  }, [conversationId, setMessages]);
+
+  const canSubmit = conversationId !== null && conversationReady && !isLoading;
 
   React.useEffect(() => {
     const viewport = messagesScrollAreaRef.current?.querySelector<HTMLElement>(
@@ -157,7 +219,7 @@ const ChatBot = () => {
   }, [isOpen, messages.length]);
 
   const handleSubmit = ({ text }: PromptInputMessage) => {
-    if (!text?.trim() || isLoading) return;
+    if (!text?.trim() || !canSubmit) return;
     sendMessage({
       role: "user",
       parts: [{ type: "text", text }],
@@ -165,7 +227,7 @@ const ChatBot = () => {
   };
 
   const handleSuggestion = (suggestion: string) => {
-    if (isLoading) return;
+    if (!canSubmit) return;
     setIsOpen(true);
     // Wait for the dialog to mount before reaching into the textarea.
     setTimeout(() => {
@@ -287,7 +349,7 @@ const ChatBot = () => {
               icon={s.icon}
               gradientColor={s.gradientColor}
               onClick={handleSuggestion}
-              disabled={isLoading}
+              disabled={!canSubmit}
               className={s.className}
             />
           </CarouselItem>
@@ -331,7 +393,7 @@ const ChatBot = () => {
         <PromptInputBody>
           <PromptInputTextarea
             placeholder="Pick a suggestion or ask anything about me..."
-            disabled={isLoading}
+            disabled={!canSubmit}
             maxLength={160}
             minLength={3}
             className="text-base text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 md:text-sm"
@@ -341,7 +403,7 @@ const ChatBot = () => {
           <PromptInputTools>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={!canSubmit}
               className="flex h-8 w-8 items-center justify-center rounded-xl bg-secondary text-secondary-foreground transition-colors hover:bg-secondary/80 disabled:opacity-50"
             >
               {isLoading ? (
@@ -559,4 +621,4 @@ const ChatBot = () => {
   );
 };
 
-export default ChatBot;
+export default PortfolioAgent;
