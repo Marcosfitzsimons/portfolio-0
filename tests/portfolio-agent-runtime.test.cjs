@@ -9,7 +9,7 @@ const {
 } = require("../lib/ai/portfolio-agent/runtime.ts");
 
 const { MockLanguageModelV3 } = require("ai/test");
-const { simulateReadableStream } = require("ai");
+const { simulateReadableStream, createUIMessageStream } = require("ai");
 
 // --- Helpers -------------------------------------------------------------
 
@@ -439,6 +439,65 @@ describe("portfolio agent runtime", () => {
     );
     assert.equal(terminals.length, 1, "exactly one terminal event");
     assert.equal(terminals[0], "answer.failed");
+  });
+
+  it("the real client reconstructs ONE assistant message (no empty duplicate)", async () => {
+    // Regression guard for the duplicate-bubble bug. The route opens the
+    // assistant message with `start` BEFORE the runtime writes data-trace parts,
+    // and the runtime's orchestrator stream is merged with sendStart:false. Fed
+    // through the REAL @ai-sdk/react client, the trace parts + answer text must
+    // collapse into a SINGLE assistant message. (Server-side onFinish always
+    // builds one message; the split only happens in the client's Chat store,
+    // so this test must use the real client to be meaningful.)
+    const { Chat } = require("@ai-sdk/react");
+    const { deps } = makeHarness({
+      classify: async () => profile({ lenses: ["product"], confidence: 0.9 }),
+    });
+    const runtime = createPortfolioAgentRuntime(deps);
+    const { input } = baseInput("Tell me about your work");
+
+    let srvId = 0;
+    const serverStream = createUIMessageStream({
+      originalMessages: [userMessage("Tell me about your work")],
+      generateId: () => `srv-${++srvId}`,
+      execute: async ({ writer }) => {
+        writer.write({ type: "start" }); // mirrors the route fix
+        input.writer = writer;
+        const result = await runtime.runTurn(input);
+        if (result.orchestratorStream) writer.merge(result.orchestratorStream);
+      },
+    });
+
+    let clientId = 0;
+    const chat = new Chat({
+      transport: {
+        sendMessages: async () => serverStream,
+        reconnectToStream: async () => null,
+      },
+      generateId: () => `client-${++clientId}`,
+      messages: [],
+    });
+
+    await chat.sendMessage({ text: "Tell me about your work" });
+    for (
+      let i = 0;
+      i < 200 && (chat.status === "streaming" || chat.status === "submitted");
+      i++
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+
+    const assistants = chat.messages.filter((m) => m.role === "assistant");
+    assert.equal(assistants.length, 1, "exactly one assistant message");
+    const parts = assistants[0].parts;
+    assert.ok(
+      parts.some((p) => p.type === "data-trace"),
+      "the single assistant message carries the trace parts",
+    );
+    assert.ok(
+      parts.some((p) => p.type === "text" && p.text.length > 0),
+      "the single assistant message carries the answer text",
+    );
   });
 
   it("trace order starts with request.received and ends with answer.completed", async () => {
