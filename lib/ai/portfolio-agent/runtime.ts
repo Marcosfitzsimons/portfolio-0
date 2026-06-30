@@ -450,7 +450,13 @@ export function createPortfolioAgentRuntime(
     return {
       runId,
       originalMessages: window,
-      orchestratorStream: result.toUIMessageStream<PortfolioAgentMessage>(),
+      // sendStart:false — the route already opened the assistant message with a
+      // `start` chunk and attached the data-trace parts to it. Letting this
+      // merged stream emit its own `start` would open a second message on the
+      // client (empty trace-only bubble + answer bubble).
+      orchestratorStream: result.toUIMessageStream<PortfolioAgentMessage>({
+        sendStart: false,
+      }),
       orchestratorModel: orchestratorModelName,
       usage,
     };

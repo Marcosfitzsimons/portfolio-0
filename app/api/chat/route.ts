@@ -109,6 +109,14 @@ export async function POST(req: Request) {
       originalMessages: messages,
       generateId: generateMessageId,
       execute: async ({ writer }) => {
+        // Open the assistant message BEFORE the runtime writes any data-trace
+        // parts. Without this, trace parts stream ahead of the `start` boundary;
+        // the React client then holds them in a throwaway message under an
+        // optimistic id and opens a SECOND message when `start` arrives with the
+        // server id — rendering an empty duplicate bubble. (AI SDK cookbook
+        // pattern: start -> data parts -> merge with sendStart:false.)
+        writer.write({ type: "start" });
+
         const result = await runtime.runTurn({
           runId,
           conversationId: parsed.data.id,
