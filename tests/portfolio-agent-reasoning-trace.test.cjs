@@ -113,3 +113,27 @@ describe("computeReasonedSeconds", () => {
     assert.equal(computeReasonedSeconds([ev("answer.completed")]), null);
   });
 });
+
+const fs = require("node:fs");
+const path = require("node:path");
+
+describe("ReasoningTrace component source", () => {
+  const source = fs.readFileSync(
+    path.join(__dirname, "..", "components", "portfolio-agent", "reasoning-trace.tsx"),
+    "utf8",
+  );
+
+  it("exports ReasoningTrace and consumes the pure rows module", () => {
+    assert.match(source, /export function ReasoningTrace/);
+    assert.match(source, /from "\.\/reasoning-trace-rows"/);
+    assert.match(source, /buildRows/);
+  });
+
+  it("respects reduced motion", () => {
+    assert.match(source, /reducedMotion/);
+  });
+
+  it("does not use the no-op Tailwind size-* utility (Tailwind 3.3.3)", () => {
+    assert.doesNotMatch(source, /className="[^"]*\bsize-/);
+  });
+});
