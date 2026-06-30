@@ -8,7 +8,9 @@ const {
   buildRows,
   hasTerminalEvent,
   computeReasonedSeconds,
+  SPECIALIST_META,
 } = require("../components/portfolio-agent/reasoning-trace-rows.ts");
+const { specialistSchema } = require("../lib/ai/portfolio-agent/schemas.ts");
 
 let seq = 0;
 function ev(type, extra = {}) {
@@ -111,6 +113,33 @@ describe("computeReasonedSeconds", () => {
   it("returns null when start or terminal is missing", () => {
     assert.equal(computeReasonedSeconds([ev("request.received")]), null);
     assert.equal(computeReasonedSeconds([ev("answer.completed")]), null);
+  });
+
+  it("returns null for an unparseable timestamp (no NaN leak)", () => {
+    const s = computeReasonedSeconds([
+      ev("request.received", { timestamp: "not-a-date" }),
+      ev("answer.completed", { timestamp: "2026-06-29T00:00:03.500Z" }),
+    ]);
+    assert.equal(s, null);
+  });
+
+  it("returns null when the terminal precedes the start (clock skew)", () => {
+    const s = computeReasonedSeconds([
+      ev("request.received", { timestamp: "2026-06-29T00:00:05.000Z" }),
+      ev("answer.completed", { timestamp: "2026-06-29T00:00:03.500Z" }),
+    ]);
+    assert.equal(s, null);
+  });
+});
+
+describe("SPECIALIST_META", () => {
+  it("has an entry for every Specialist enum member", () => {
+    for (const sp of specialistSchema.options) {
+      assert.ok(SPECIALIST_META[sp], `missing SPECIALIST_META entry for "${sp}"`);
+      assert.equal(typeof SPECIALIST_META[sp].accent, "string");
+      assert.equal(typeof SPECIALIST_META[sp].icon, "string");
+      assert.equal(typeof SPECIALIST_META[sp].label, "string");
+    }
   });
 });
 

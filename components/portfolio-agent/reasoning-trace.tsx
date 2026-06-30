@@ -157,13 +157,14 @@ export function ReasoningTrace({ events, isLatest, isStreaming, reducedMotion }:
     <div className="ml-6 mb-2 w-full max-w-[470px]">
       <button
         type="button"
-        onClick={done ? () => setCollapsed((c) => !c) : undefined}
-        className="group mb-1 flex items-center gap-2 py-0.5 text-left"
-        style={{ cursor: done ? "pointer" : "default" }}
+        onClick={() => setCollapsed((c) => !c)}
+        disabled={!done}
+        aria-expanded={done ? !collapsed : undefined}
+        className="group mb-1 flex items-center gap-2 py-0.5 text-left cursor-pointer disabled:cursor-default"
       >
         {done && (
           <motion.span animate={{ rotate: collapsed ? 0 : 90 }} transition={{ duration: 0.18, ease: EASE_OUT }} className="text-zinc-500">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
               <path d="m9 18 6-6-6-6" />
             </svg>
           </motion.span>
