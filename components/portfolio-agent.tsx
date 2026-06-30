@@ -29,6 +29,8 @@ import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ShinyText, { ShinyIcon, SPARKLES_SVG } from "./shiny-text";
+import { ReasoningTrace } from "./portfolio-agent/reasoning-trace";
+import type { PublicTraceEvent } from "@/lib/ai/portfolio-agent/schemas";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const AI_LABEL = "Marcos AI";
@@ -252,6 +254,18 @@ const PortfolioAgent = () => {
     return "";
   };
 
+  const getTraceEvents = (
+    message: (typeof messages)[0],
+  ): PublicTraceEvent[] =>
+    Array.isArray(message.parts)
+      ? message.parts
+          .filter(
+            (part): part is { type: "data-trace"; id: string; data: PublicTraceEvent } =>
+              part.type === "data-trace",
+          )
+          .map((part) => part.data)
+      : [];
+
   const handleOpenCollapsed = () => setIsOpen(true);
   const handleKeyDownCollapsed = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -266,9 +280,13 @@ const PortfolioAgent = () => {
 
   const messagesList = (
     <>
-      {messages.map((message) => {
+      {messages.map((message, index) => {
         const content = getMessageText(message);
         const isUser = message.role === "user";
+        const isLast = index === messages.length - 1;
+        const isStreaming =
+          isLast && (status === "streaming" || status === "submitted");
+        const traceEvents = isUser ? [] : getTraceEvents(message);
 
         return (
           <div
@@ -295,26 +313,38 @@ const PortfolioAgent = () => {
                 <span className="sr-only">{AI_LABEL}</span>
               </div>
             )}
-            <ScrollArea
-              className={cn(
-                "flex max-h-[178px] flex-col gap-1 rounded-lg border",
-                isUser
-                  ? "mr-6 rounded-tr-[3px] border-primary/30 bg-primary/15"
-                  : "ml-6 rounded-tl-[3px] border-secondary/50 bg-secondary/40",
-              )}
-            >
-              {isUser ? (
-                <p className="rounded-none px-4 py-2 text-xs md:text-sm text-white">
-                  {content}
-                </p>
-              ) : (
-                <div className="chat-markdown rounded-none px-4 py-2 text-xs md:text-sm text-muted-foreground">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+
+            {!isUser && (
+              <ReasoningTrace
+                events={traceEvents}
+                isLatest={isLast}
+                isStreaming={isStreaming}
+                reducedMotion={Boolean(prefersReducedMotion)}
+              />
+            )}
+
+            {(isUser || content) && (
+              <ScrollArea
+                className={cn(
+                  "flex max-h-[178px] flex-col gap-1 rounded-lg border",
+                  isUser
+                    ? "mr-6 rounded-tr-[3px] border-primary/30 bg-primary/15"
+                    : "ml-6 rounded-tl-[3px] border-secondary/50 bg-secondary/40",
+                )}
+              >
+                {isUser ? (
+                  <p className="rounded-none px-4 py-2 text-xs md:text-sm text-white">
                     {content}
-                  </ReactMarkdown>
-                </div>
-              )}
-            </ScrollArea>
+                  </p>
+                ) : (
+                  <div className="chat-markdown rounded-none px-4 py-2 text-xs md:text-sm text-muted-foreground">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {content}
+                    </ReactMarkdown>
+                  </div>
+                )}
+              </ScrollArea>
+            )}
           </div>
         );
       })}
